@@ -74,23 +74,23 @@ foosball environment where the goalie is trained.
 The observation space represents the current state of the foosball environment. It includes sensor readings from the
 ball and the goalie.
 
-| Observation channel            | Value range | Value type |
-|:-------------------------------|:-----------:|:----------:|
-| Ball - position - x            | [-inf, inf] |   float    |
-| Ball - position - z            | [-inf, inf] |   float    |
-| Ball - position - y            | [-inf, inf] |   float    |
-| Ball - velocity - x            | [-inf, inf] |   float    |
-| Ball - velocity - y            | [-inf, inf] |   float    |
-| Ball - velocity - z            | [-inf, inf] |   float    |
-| Ball - acceleration - x        | [-inf, inf] |   float    |
-| Ball - acceleration - y        | [-inf, inf] |   float    |
-| Ball - acceleration - z        | [-inf, inf] |   float    |
-| Goalie - position - lateral    | [-inf, inf] |   float    |
-| Goalie - velocity - lateral    | [-inf, inf] |   float    |
-| Goalie - position - angular    | [-inf, inf] |   float    |
-| Goalie - velocity - angular    | [-inf, inf] |   float    |
-| Goalie - last action - lateral |   [-1, 1]   |   float    |
-| Goalie - last action - angular |   [-1, 1]   |   float    |
+| Observation channel            |    Range    | Type  |
+|:-------------------------------|:-----------:|:-----:|
+| Ball - position - x            | [-inf, inf] | float |
+| Ball - position - z            | [-inf, inf] | float |
+| Ball - position - y            | [-inf, inf] | float |
+| Ball - velocity - x            | [-inf, inf] | float |
+| Ball - velocity - y            | [-inf, inf] | float |
+| Ball - velocity - z            | [-inf, inf] | float |
+| Ball - acceleration - x        | [-inf, inf] | float |
+| Ball - acceleration - y        | [-inf, inf] | float |
+| Ball - acceleration - z        | [-inf, inf] | float |
+| Goalie - position - lateral    | [-inf, inf] | float |
+| Goalie - velocity - lateral    | [-inf, inf] | float |
+| Goalie - position - angular    | [-inf, inf] | float |
+| Goalie - velocity - angular    | [-inf, inf] | float |
+| Goalie - last action - lateral |   [-1, 1]   | float |
+| Goalie - last action - angular |   [-1, 1]   | float |
 
 ### Action Space
 
@@ -110,23 +110,23 @@ The action space is defined as follows:
 
 #### Continuous Action Space
 
-| Action channel            | Value range | Value type |
-|:--------------------------|:-----------:|:----------:|
-| Goalie - lateral - torque |   [-1, 1]   |   float    |
-| Goalie - angular - torque |   [-1, 1]   |   float    |
+| Action channel            |  Range  | Type  |
+|:--------------------------|:-------:|:-----:|
+| Goalie - lateral - torque | [-1, 1] | float |
+| Goalie - angular - torque | [-1, 1] | float |
 
 #### Multi-Discrete Action Space
 
-| Action channel            | Value range | Value type |
-|:--------------------------|:-----------:|:----------:|
-| Goalie - lateral - torque | Discrete(5) |    int     |
-| Goalie - angular - torque | Discrete(5) |    int     |
+| Action channel            |    Range    | Type |
+|:--------------------------|:-----------:|:----:|
+| Goalie - lateral - torque | Discrete(5) | int  |
+| Goalie - angular - torque | Discrete(5) | int  |
 
 #### Discrete Action Space
 
-| Action channel                       | Value range  | Value type |
-|:-------------------------------------|:------------:|:----------:|
-| Goalie - lateral or angular - torque | Discrete(10) |    int     |
+| Action channel                       |    Range     | Type |
+|:-------------------------------------|:------------:|:----:|
+| Goalie - lateral or angular - torque | Discrete(10) | int  |
 
 
 
