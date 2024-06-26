@@ -1,4 +1,5 @@
 import ast
+import importlib
 from configparser import ConfigParser
 from pathlib import Path
 
@@ -7,7 +8,8 @@ from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
 from config import save_run_info
 from custom_callbacks import TensorboardCallback
 from foosball_rl.environment import create_kicker_env
-from foosball_rl.tensorboard_aggregator import aggregator
+
+aggregator = importlib.import_module('tensorboard-aggregator')
 
 
 def train_loop(config: ConfigParser, training_path: Path, algorithm_class):
