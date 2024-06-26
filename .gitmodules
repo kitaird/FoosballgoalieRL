@@ -1,3 +1,3 @@
 [submodule "foosball_rl/tensorboard-aggregator"]
-	path = foosball_rl/tensorboard_aggregator
+	path = foosball_rl/tensorboard-aggregator
 	url = git@github.com:kitaird/tensorboard-aggregator.git
