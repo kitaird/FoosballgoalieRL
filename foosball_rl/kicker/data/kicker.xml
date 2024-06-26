@@ -1,0 +1,224 @@
+<mujoco model="kicker">
+
+    <option timestep="0.002" integrator="implicitfast"/>
+
+    <default class="plastic">
+        <joint armature="1" damping="1"/>
+        <default class="plastic_figure">
+                <geom condim="3" density="3000" solimp="0.4 0.45 0.01" solref="-200000 -20" friction="0.15 0.0005 0.0001"/>
+        </default>
+        <default class="plastic_ball">
+            <geom condim="6" density="3500" solimp="0.2 0.3 0.01" solref="-125000 -85" friction="0.5 0.005 0.005"/>
+        </default>
+        <default class="plastic_field">
+            <geom condim="6" density="6000" solimp="0.4 0.45 0.01" solref="-200000 -20" friction="0.15 0.0005 0.0001" rgba="1 1 1 1"/>
+        </default>
+        <default class="metal_rod">
+            <geom priority="1" density="10000" condim="3" solref="-250000 -10" friction="0.005 0.00005 0.0001"/>
+        </default>
+    </default>
+
+    <asset>
+        <texture builtin="checker" height="100" name="texplane" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" type="2d"
+                 width="100"/>
+        <material name="MatPlane" reflectance="0.5" texture="texplane" texrepeat="1 1" texuniform="true"/>
+
+        <texture name="foosball_field" type="2d" file="assets/hda_logo.png" />
+        <material name="field_mat" texture="foosball_field" texuniform="false" reflectance="0.2" texrepeat="1 1"/>
+
+        <texture name="wall_tex" builtin="flat" type="cube" height="1278" width="127" rgb1="0.5 0.5 0.5"
+                 rgb2="0.5 0.5 0.5"/>
+        <material name="wall_mat" texture="wall_tex"/>
+        <material name="figure_mat"/>
+        <material name="metal_mat"/>
+
+        <mesh name="longWallLeft" file="assets/long_wall/longWallLeftWO.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft1" file="assets/long_wall/longWallLeft1.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft2" file="assets/long_wall/longWallLeft2.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft3" file="assets/long_wall/longWallLeft3.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft4" file="assets/long_wall/longWallLeft4.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft5" file="assets/long_wall/longWallLeft5.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft6" file="assets/long_wall/longWallLeft6.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft7" file="assets/long_wall/longWallLeft7.stl" scale="2 2 2"/>
+        <mesh name="longWallLeft8" file="assets/long_wall/longWallLeft8.stl" scale="2 2 2"/>
+        <mesh name="longWallRight" file="assets/long_wall/longWallRightWO.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight1" file="assets/long_wall/longWallRight1.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight2" file="assets/long_wall/longWallRight2.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight3" file="assets/long_wall/longWallRight3.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight4" file="assets/long_wall/longWallRight4.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight5" file="assets/long_wall/longWallRight5.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight6" file="assets/long_wall/longWallRight6.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight7" file="assets/long_wall/longWallRight7.stl" scale="2 2 2" refquat="0 0 0 1" />
+        <mesh name="longWallRight8" file="assets/long_wall/longWallRight8.stl" scale="2 2 2" refquat="0 0 0 1" />
+
+        <mesh name="kickerRahmenTop1" file="assets/kickerRahmenTop1.stl" scale="2 2 2"/>
+        <mesh name="kickerRahmenTop2" file="assets/kickerRahmenTop2.stl" scale="2 2 2"/>
+
+        <mesh name="figure" file="assets/figure.obj" scale="2 2 2" class="plastic"/>
+
+        <mesh name="shortWall1" file="assets/short_wall/shortWall1.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="shortWall2-mid" file="assets/short_wall/shortWall2-mid.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="rightShortWall2-1" file="assets/short_wall/shortWall2-1.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="rightShortWall2-2" file="assets/short_wall/shortWall2-2.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="rightShortWall2-3" file="assets/short_wall/shortWall2-3.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="rightShortWall2-4" file="assets/short_wall/shortWall2-4.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="rightShortWall2-5" file="assets/short_wall/shortWall2-5.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="rightShortWall2-6" file="assets/short_wall/shortWall2-6.stl" scale="2 2 2" refquat="1 1 0 0" />
+        <mesh name="leftShortWall2-1" file="assets/short_wall/shortWall2-1.stl" scale="2 -2 2" refquat="1 1 0 0" />
+        <mesh name="leftShortWall2-2" file="assets/short_wall/shortWall2-2.stl" scale="2 -2 2" refquat="1 1 0 0" />
+        <mesh name="leftShortWall2-3" file="assets/short_wall/shortWall2-3.stl" scale="2 -2 2" refquat="1 1 0 0" />
+        <mesh name="leftShortWall2-4" file="assets/short_wall/shortWall2-4.stl" scale="2 -2 2" refquat="1 1 0 0" />
+        <mesh name="leftShortWall2-5" file="assets/short_wall/shortWall2-5.stl" scale="2 -2 2" refquat="1 1 0 0" />
+        <mesh name="leftShortWall2-6" file="assets/short_wall/shortWall2-6.stl" scale="2 -2 2" refquat="1 1 0 0" />
+        <mesh name="shortWall3" file="assets/short_wall/shortWall3.stl" scale="2 2 2" refquat="1 1 0 0" />
+    </asset>
+
+    <worldbody>
+        <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="10" pos="0 0 1.3" specular=".1 .1 .1"/>
+        <geom material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="2 2 2" type="plane"/>
+        <camera name="table_view" pos="0 0 3" resolution="640 480" xyaxes="1 0 0 0 1 0"/>
+
+        <!-- Table -->
+        <body name="table" pos="0 0 0">
+            <!-- Table Surface -->
+            <body name="field" pos="0 0 0.561">
+                <geom type="box" class="plastic_field" pos="1.075 0.5275 -0.01" size="0.15 0.155 0.01" euler="3.5 -3.5 0" conaffinity="1"/>
+                <geom type="box" class="plastic_field" pos="-1.075 0.5275 -0.01" size="0.15 0.155 0.01" euler="3.5 3.5 0" conaffinity="1"/>
+                <geom type="box" class="plastic_field" pos="-1.075 -0.5275 -0.01" size="0.15 0.155 0.01" euler="-3.5 3.5 0" conaffinity="1"/>
+                <geom type="box" class="plastic_field" pos="1.075 -0.5275 -0.01" size="0.15 0.155 0.01" euler="-3.5 -3.5 0" conaffinity="1"/>
+                <geom type="box" class="plastic_field" material="field_mat" pos="0 0 -0.01" size="1.217 0.68 0.01" conaffinity="1" />
+            </body>
+
+            <body name="rahmen_top_left" pos="-1.4 0 0">
+                <geom type="mesh" mesh="kickerRahmenTop1" conaffinity="0"/>
+                <geom type="mesh" mesh="kickerRahmenTop2" conaffinity="0"/>
+            </body>
+
+            <body name="rahmen_top_right" pos="1.4 0 0" quat="0 0 0 1">
+                <geom type="mesh" mesh="kickerRahmenTop1" conaffinity="0" />
+                <geom type="mesh" mesh="kickerRahmenTop2" conaffinity="0"/>
+            </body>
+
+            <body name="long_wall_Left" pos="0 -0.708 0">
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft1" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft2" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft3" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft4" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft5" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft6" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft7" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallLeft8" contype="4" conaffinity="1"/>
+            </body>
+
+            <body name="long_wall_Right" pos="0 0.708 0">
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight1" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight2" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight3" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight4" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight5" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight6" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight7" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="longWallRight8" contype="4" conaffinity="1"/>
+            </body>
+
+            <body name="short_wall_white" pos="1.216 -0.2 0.661" quat="0 1 0 0">
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="shortWall1" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="shortWall2-mid" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-1" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-2" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-3" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-4" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-5" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-6" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-1" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-2" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-3" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-4" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-5" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-6" pos="0 -0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="shortWall3" contype="4" conaffinity="1"/>
+            </body>
+
+            <body name="short_wall_black" pos="-1.216 0 0.661" quat="0 0 1 0">
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="shortWall1" pos="0 0.2 0" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="shortWall2-mid" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-1" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-2" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-3" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-4" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-5" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="rightShortWall2-6" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-1" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-2" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-3" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-4" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-5" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="leftShortWall2-6" contype="4" conaffinity="1"/>
+                <geom type="mesh" class="plastic_field" rgba="0.5 0.5 0.5 1" mesh="shortWall3" pos="0 0.2 0" contype="4" conaffinity="1"/>
+            </body>
+
+            <body name="white_goal" pos="1.216 0 0.661">
+                <geom type="box" pos="0.155 0 -0.12" size="0.005 0.3 0.2" contype="4" conaffinity="1"/>
+                <geom type="box" pos="0.09 0.295 -0.12" size="0.07 0.005 0.2" contype="4" conaffinity="1"/>
+                <geom type="box" pos="0.09 -0.295 -0.12" size="0.07 0.005 0.2" contype="4" conaffinity="1"/>
+                <geom type="box" pos="0.09 0 0.075" size="0.07 0.3 0.005" contype="4" conaffinity="1"/>
+                <geom type="box" pos="0.09 0 -0.315" size="0.07 0.3 0.005" contype="4" conaffinity="1"/>
+                <geom type="box" pos="0.01 0 -0.215" size="0.01 0.3 0.105" contype="4" conaffinity="1"/>
+                <site name="white_goal_site" type="box" pos="0.08 0 -0.12" size="0.08 0.3 0.2" rgba="1 0.5 1 1"/>
+            </body>
+
+            <body name="black_goal" pos="-1.216 0 0.661">
+                <geom type="box" pos="-0.155 0 -0.12" size="0.005 0.3 0.2" contype="4" conaffinity="1"/>
+                <geom type="box" pos="-0.09 0.295 -0.12" size="0.07 0.005 0.2" contype="4" conaffinity="1"/>
+                <geom type="box" pos="-0.09 -0.295 -0.12" size="0.07 0.005 0.2" contype="4" conaffinity="1"/>
+                <geom type="box" pos="-0.09 0 0.075" size="0.07 0.3 0.005" contype="4" conaffinity="1"/>
+                <geom type="box" pos="-0.09 0 -0.315" size="0.07 0.3 0.005" contype="4" conaffinity="1"/>
+                <geom type="box" pos="-0.01 0 -0.215" size="0.01 0.3 0.105" contype="4" conaffinity="1"/>
+                <site name="black_goal_site" type="box" pos="-0.08 0 -0.12" size="0.08 0.3 0.2" rgba="1 0.5 1 1"/>
+            </body>
+        </body>
+
+        <body name="b_g" pos="-1.0435 0 0.605">
+            <joint name="b_g_slide" type="slide" range="-0.245 0.245" axis="0 1 0"/>
+            <joint name="b_g_hinge" type="hinge" range="-90 90" axis="0 1 0" pos="0 0 0.12"/>
+            <geom type="cylinder" size="0.0175" class="metal_rod" fromto="0 -1.2 0.12 0 1.2 0.12" rgba="0.5 0.5 0.5 1" contype="16" conaffinity="0"/>
+            <site name="b_g_site" type="cylinder" fromto="0 -1.2 0.12 0 1.2 0.12" size="0.0175" rgba="0 0 1 1"/>
+
+            <geom type="cylinder" class="plastic_figure" size="0.03 0.02" quat="1 1 0 0" pos="0 -0.4112 0.12" rgba="0 0 1 1"
+                  contype="8" conaffinity="1"/>
+            <geom type="cylinder" class="plastic_figure" size="0.03 0.02" quat="1 1 0 0" pos="0 0.4112 0.12" rgba="0 0 1 1"
+                  contype="8" conaffinity="1"/>
+
+            <geom type="mesh" contype="2" conaffinity="1" mesh="figure" class="plastic_figure" material="figure_mat"
+                  pos="0 0 0.09"
+                  quat="1 1 0 0"
+                  rgba="0 0 0 1"/>
+            <site name="b_g_1" size="0.01" pos="0 0 0.1" rgba="0 0 1 1"/>
+        </body>
+
+        <body name="ball" pos="-0.4479 0.4 0.61">
+            <freejoint/>
+            <geom priority="1" type="sphere" size="0.035" rgba="1 0 0 1" class="plastic_ball" contype="1" conaffinity="30"/>
+            <site name="ball_site" pos="0 0 0" size="0.035" rgba="0 0 0 1"/>
+        </body>
+
+    </worldbody>
+
+    <actuator>
+        <motor group="1" name="b_g_slide_motor" forcelimited="true" forcerange="-9 9" ctrllimited="true" ctrlrange="-1.0 1.0" joint="b_g_slide" gear="90"/>
+        <motor group="1" name="b_g_hinge_motor" forcelimited="true" forcerange="-18 18" ctrllimited="true" ctrlrange="-1.0 1.0" joint="b_g_hinge" gear="180"/>
+    </actuator>
+
+    <sensor>
+        <touch name="white_goal_sensor" site="white_goal_site"/> <!-- 1 dim -->
+        <touch name="black_goal_sensor" site="black_goal_site"/> <!-- 1 dim -->
+        <velocimeter name="ball_vel_sensor" site="ball_site"/> <!-- 3 dim -->
+        <accelerometer name="ball_acc_sensor" site="ball_site"/> <!-- 3 dim -->
+        <jointpos name="b_g_slide_pos_sensor" joint="b_g_slide"/> <!-- 1 dim -->
+        <jointvel name="b_g_slide_vel_sensor" joint="b_g_slide"/> <!-- 1 dim -->
+        <jointpos name="b_g_hinge_pos_sensor" joint="b_g_hinge"/> <!-- 1 dim -->
+        <jointvel name="b_g_hinge_vel_sensor" joint="b_g_hinge"/> <!-- 1 dim -->
+    </sensor>
+</mujoco>
