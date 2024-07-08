@@ -5,8 +5,13 @@ from itertools import cycle
 
 
 class MujocoViewer:
-    def __init__(self, model, dt):
+    """
+    Based on: https://github.com/nico-bohlinger/RL-X
+    rl_x/environments/custom_mujoco/ant/viewer.py
+    """
+    def __init__(self, model, data, dt):
         self.model = model
+        self.data = data
         self.dt = dt
 
         self.button_left, self.button_right, self.button_middle = False, False, False
@@ -93,24 +98,23 @@ class MujocoViewer:
         elif key == glfw.KEY_F:
             self.run_speed_factor *= 2.0
         elif key == glfw.KEY_UP:
-            self.data.qvel[8] += 0.5
+            self.data.qvel[0] += 0.5
         elif key == glfw.KEY_LEFT:
-            self.data.qvel[9] += 0.5
+            self.data.qvel[1] += 0.5
         elif key == glfw.KEY_RIGHT:
-            self.data.qvel[9] -= 0.5
+            self.data.qvel[1] -= 0.5
         elif key == glfw.KEY_DOWN:
-            self.data.qvel[8] -= 0.5
+            self.data.qvel[0] -= 0.5
 
     def scroll(self, window, x_offset, y_offset):
         mujoco.mjv_moveCamera(self.model, mujoco.mjtMouse.mjMOUSE_ZOOM, 0, 0.05 * y_offset, self.scene, self.camera)
 
-    def render(self, data):
-        self.data = data
+    def render(self):
         def render_inner_loop(self):
             self.create_overlay()
             render_start = time.time()
 
-            mujoco.mjv_updateScene(self.model, data, self.scene_option, None, self.camera,
+            mujoco.mjv_updateScene(self.model, self.data, self.scene_option, None, self.camera,
                                    mujoco.mjtCatBit.mjCAT_ALL,
                                    self.scene)
             self.viewport.width, self.viewport.height = glfw.get_framebuffer_size(self.window)
