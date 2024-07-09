@@ -4,10 +4,10 @@ import json
 from configparser import ConfigParser
 from pathlib import Path
 
-from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
 from stable_baselines3 import HerReplayBuffer
+from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
 
-from foosball_rl.common.custom_callbacks import TensorboardCallback
+from foosball_rl.environments.common.custom_callbacks import TensorboardCallback
 from foosball_rl.config.config import save_run_info
 from foosball_rl.create_env import create_env
 
@@ -31,7 +31,7 @@ def train(config: ConfigParser, seed: int, experiment_path: Path, algorithm_clas
                             gamma=alg_config.getfloat('discount_factor'),
                             policy_kwargs=policy_kwargs,
                             tensorboard_log=experiment_path / 'tensorboard',
-                            # replay_buffer_class=globals()[alg_config['replay_buffer_class']],
+                            replay_buffer_class=globals()[alg_config['replay_buffer_class']],
                             ################################
                             # Add here more hyperparameters if needed, following the above scheme
                             # hyperparameter_name=alg_config['hyperparameter_name']
@@ -39,8 +39,8 @@ def train(config: ConfigParser, seed: int, experiment_path: Path, algorithm_clas
                             ################################
                             )
 
-    save_run_info(run_config=config, env_config=env.unwrapped.get_attr('env_config')[0], save_path=experiment_path,
-                  seed=seed, algorithm_name=type(model).__name__)
+    save_run_info(run_config=config, venv=env, save_path=experiment_path, seed=seed,
+                  algorithm_name=type(model).__name__)
 
     training_config = config['Training']
     model.learn(total_timesteps=training_config.getint('total_timesteps'), tb_log_name=training_config['tb_log_name'],
