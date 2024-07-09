@@ -1,14 +1,16 @@
-from typing import Callable
+import logging
+from typing import Callable, Dict
 
 import numpy as np
 from stable_baselines3.common.vec_env import VecEnv, VecEnvWrapper
 from stable_baselines3.common.vec_env.base_vec_env import VecEnvStepReturn, VecEnvObs
 
-
 WEIGHTING_FACTOR = np.array([0.8, 0.2])
 
 
 def potential_function(obs: np.ndarray) -> np.ndarray:
+    if isinstance(obs, Dict):
+        obs = obs['observation']  # Handling GoalConditionedWrapper
     ball_positions = obs[:, 0:2]
     potentials = np.column_stack([
         ball_x_potential(ball_positions[:, 0]),
@@ -63,11 +65,3 @@ class VecPBRSWrapper(VecEnvWrapper):
         self.last_potentials = current_potentials
         rewards += potential_differences
         return observations, rewards, dones, infos
-
-
-def contour_plot_to_console(x, y, z):
-    for r in range(len(y)):
-        row = ""
-        for col in range(len(x)):
-            row += " " + f"{z[r][col]:.2f}"
-        print(row)
