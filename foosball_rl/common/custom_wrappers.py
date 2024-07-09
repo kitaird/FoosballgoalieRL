@@ -1,9 +1,56 @@
-from typing import Any
+from collections import OrderedDict
+from typing import Any, SupportsFloat, Union, Optional, Dict
 
 import gymnasium as gym
 import numpy as np
-from gymnasium import ActionWrapper, Wrapper
-from gymnasium.core import WrapperActType, ActType
+from gymnasium import ActionWrapper, Wrapper, spaces
+from gymnasium.core import WrapperActType, ActType, WrapperObsType
+
+from foosball_rl.environments.constants import WHITE_GOAL_X_POSITION, FIELD_HEIGHT
+
+
+class GoalConditionWrapper(gym.Wrapper):
+
+    def __init__(self, env: gym.Env):
+        super().__init__(env)
+        self.original_observation_space = env.observation_space
+        self.observation_space = self._make_observation_space()
+        self.desired_goal = np.array([WHITE_GOAL_X_POSITION, 0.0, FIELD_HEIGHT])  # The goal position of the ball
+
+    def _make_observation_space(self) -> gym.Space:
+        return spaces.Dict({
+                "observation": self.original_observation_space,
+                "achieved_goal": self.original_observation_space,
+                "desired_goal": spaces.Box(low=0, high=1, shape=(3,), dtype=np.float32),
+            })
+
+    def _get_obs(self, obs: WrapperObsType):
+        return OrderedDict(
+            [
+                ("observation", obs.copy()),
+                ("achieved_goal", obs.copy()),
+                ("desired_goal", self.desired_goal.copy()),
+            ]
+        )
+
+    def step(self, action: WrapperActType) -> tuple[WrapperObsType, SupportsFloat, bool, bool, dict[str, Any]]:
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        obs = self._get_obs(obs)
+        reward += float(self.compute_reward(obs["achieved_goal"], obs["desired_goal"], None).item())
+        return obs, reward, terminated, truncated, info
+
+    def compute_reward(self, achieved_goal: Union[int, np.ndarray], desired_goal: Union[int, np.ndarray],
+                       _info: Optional[Dict[str, Any]]) -> np.float32:
+        # As we are using a vectorized version, we need to keep track of the `batch_size`
+        # if isinstance(achieved_goal, int):
+        #     batch_size = 1
+        # else:
+        #     batch_size = achieved_goal.shape[0] if len(achieved_goal.shape) > 1 else 1
+
+        achieved_ball_pos = achieved_goal[0:2]
+
+        distance = np.linalg.norm(achieved_ball_pos - desired_goal, axis=-1)
+        return -(distance > 0).astype(np.float32)
 
 
 class AddActionToObservationsWrapper(Wrapper):
