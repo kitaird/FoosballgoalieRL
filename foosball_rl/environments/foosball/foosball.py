@@ -1,3 +1,4 @@
+import logging
 from configparser import ConfigParser
 from pathlib import Path
 
@@ -5,8 +6,8 @@ import gymnasium as gym
 import mujoco
 import numpy as np
 
+from foosball_rl.environments.common.viewer import MujocoViewer
 from foosball_rl.environments.constraints import black_goal_scored, white_goal_scored
-from foosball_rl.common.viewer import MujocoViewer
 from foosball_rl.environments.foosball.episode_definition import EpisodeDefinition, FoosballEpisodeDefinition
 
 
@@ -85,6 +86,7 @@ class Foosball(gym.Env):
                  episode_definition: EpisodeDefinition = None,
                  env_config: ConfigParser = None):
         super().__init__()
+        self.logger = logging.getLogger(self.__class__.__name__)
         self._env_config = env_config
         self.render_mode = render_mode
         self.use_image_obs = use_image_obs
@@ -109,11 +111,9 @@ class Foosball(gym.Env):
         self.log_initialization()
 
     def log_initialization(self):
-        print("-" * 50)
-        print(f"Initialized Goalkeeper Environment with episode definition: {self.episode_definition}")
-        print(f"Using Observation Space: {self.observation_space}")
-        print(f"Using Action Space: {self.action_space}")
-        print("-" * 50)
+        self.logger.info("Initialized Goalkeeper Environment with episode definition: %s", self.episode_definition)
+        self.logger.info("Using Observation Space: %s", self.observation_space)
+        self.logger.info("Using Action Space: %s", self.action_space)
 
     def _initialize_renderer(self):
         if self.render_mode == "human":
@@ -134,9 +134,7 @@ class Foosball(gym.Env):
 
     def reset(self, seed=None, options=None):
         if seed is not None:
-            print("-" * 50)
-            print(f"Setting seed to {seed}")
-            print("-" * 50)
+            self.logger.info("Setting seed to %s", seed)
             self._initialize_action_space(seed=seed)
             self.episode_definition.seed(seed=seed)
             super().reset(seed=seed)
@@ -164,7 +162,7 @@ class Foosball(gym.Env):
         info = {**reward_info}
 
         if terminated or truncated:
-            info["final_observation"] = next_state
+            info["terminal_observation"] = next_state
 
         if self.render_mode == "human":
             self.render()
