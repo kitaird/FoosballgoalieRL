@@ -30,10 +30,10 @@ def create_env(env_id: str, config: ConfigParser, seed: int, video_logging_path:
 
 
 def apply_wrappers(config: ConfigParser, env: gym.Env, vec_normalize_path: str = None):
+    env = Monitor(env)  # Monitor should log raw rewards
     env = AddActionToObservationsWrapper(env)
     env = GoalConditionedWrapper(env)  # When using HER
     env = action_space_wrapper(env, config)
-    env = Monitor(env)
     venv = DummyVecEnv([lambda: env])  # VecEnv from here on
     venv = VecPBRSWrapper(venv=venv, gamma=config['Algorithm'].getfloat('discount_factor'))
     if vec_normalize_path is not None:
