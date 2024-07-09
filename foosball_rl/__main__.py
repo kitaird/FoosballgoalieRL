@@ -1,8 +1,11 @@
+import logging.config
 from pathlib import Path
 
-from stable_baselines3 import PPO, SAC
+logging.config.fileConfig(Path(__file__).parent / 'logging.ini')
+logger = logging.getLogger(__name__)
 
 from eval import evaluate_model
+from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3
 from foosball_rl.config.config import get_config
 from foosball_rl.environments.foosball import foosball_id
 from foosball_rl.environments.goalkeeper import goalkeeper_id
@@ -20,10 +23,8 @@ def main():
 
     rl_alg = globals()[config['Algorithm']['algo']]
 
-    print("-" * 50)
-    print(f"Starting experiment {experiment_name} in mode {experiment_mode} on environment {env_id}")
-    print(f"Using base directory {base_dir} for storing training/testing data and models")
-    print("-" * 50)
+    logger.info("Starting experiment %s in mode %s on environment %s", experiment_name, experiment_mode, env_id)
+    logger.info("Using base directory %s for storing training/testing data and models", base_dir)
 
     if experiment_mode == 'train':
         train_loop(env_id=env_id, config=config, training_path=base_dir / 'training', algorithm_class=rl_alg)
