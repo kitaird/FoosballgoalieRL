@@ -5,6 +5,7 @@ from configparser import ConfigParser
 from pathlib import Path
 
 from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
+from stable_baselines3 import HerReplayBuffer
 
 from foosball_rl.common.custom_callbacks import TensorboardCallback
 from foosball_rl.config.config import save_run_info
@@ -25,10 +26,12 @@ def train(config: ConfigParser, seed: int, experiment_path: Path, algorithm_clas
     policy_kwargs = ast.literal_eval(alg_config['policy_kwargs']) if config.has_option('Algorithm', 'policy_kwargs') else None
 
     model = algorithm_class(env=env, seed=seed, verbose=1,
+                            device=alg_config['device'],
                             policy=alg_config['policy'],
                             gamma=alg_config.getfloat('discount_factor'),
                             policy_kwargs=policy_kwargs,
-                            tensorboard_log=experiment_path / 'tensorboard'
+                            tensorboard_log=experiment_path / 'tensorboard',
+                            # replay_buffer_class=globals()[alg_config['replay_buffer_class']],
                             ################################
                             # Add here more hyperparameters if needed, following the above scheme
                             # hyperparameter_name=alg_config['hyperparameter_name']

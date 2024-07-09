@@ -1,3 +1,4 @@
+import time
 from collections import defaultdict
 from configparser import ConfigParser
 from pathlib import Path
@@ -17,7 +18,8 @@ def evaluate_model(env_id: str, config: ConfigParser, test_path: Path, algorithm
     print("-" * 50)
     print(f"Evaluating {algorithm_class.__name__} model from {test_cfg['test_model_path']} on {env_id} environment")
 
-    model = algorithm_class.load(test_cfg['test_model_path'])
+    model_path = test_cfg['model_path']
+    model = algorithm_class.load(model_path)
 
     env = create_env(env_id=env_id, config=config, seed=test_cfg.getint('eval_seed'), video_logging_path=test_path)
     if test_cfg['normalized_env_path'] is not None:
@@ -28,19 +30,21 @@ def evaluate_model(env_id: str, config: ConfigParser, test_path: Path, algorithm
                                                        n_eval_episodes=test_cfg.getint('num_eval_episodes'),
                                                        callback=_log_callback)
 
-    save_results(config=config, test_path=test_path, episode_rewards=episode_rewards,
+    save_results(config=config, test_path=test_path, model_path=model_path, episode_rewards=episode_rewards,
                  episode_lengths=episode_lengths, callback_values=logged_callback_values)
 
     print(f"Mean reward: {episode_rewards}, Mean episode length: {episode_lengths}")
     print("-" * 50)
 
 
-def save_results(config: ConfigParser, test_path: Path, episode_rewards: float, episode_lengths: float,
+def save_results(config: ConfigParser, test_path: Path, model_path: str, episode_rewards: float, episode_lengths: float,
                  callback_values: Dict[str, Any] = None):
-    with open(test_path / 'evaluation_result.txt', 'w') as f:
+    eval_file_name = f'evaluation_result_{model_path[model_path.rindex("/")+1:]}_{round(time.time() * 1000)}.txt'
+    with open(test_path / eval_file_name, 'w') as f:
         f.write(f"Experiment name: {config['Common']['experiment_name']}\n")
         f.write("-" * 50 + "\n")
-        f.write(f"Seed: {config['Testing'].getint('eval_seed')}\n")
+        f.write(f"Evaluation seed: {config['Testing'].getint('eval_seed')}\n")
+        f.write(f"Model path: {model_path}\n")
         f.write(f"Number of evaluation episodes: {config['Testing'].getint('num_eval_episodes')}\n")
         f.write("-" * 50 + "\n")
         f.write(f"Mean reward: {episode_rewards}\n")
