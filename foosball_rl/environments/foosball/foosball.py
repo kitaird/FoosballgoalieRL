@@ -207,12 +207,12 @@ class Foosball(gym.Env):
             return self.renderer.render()
 
     def _feature_vector_obs(self):
-        sensors_wo_goals = self.mj_data.sensordata[2:12]
+        sensors_wo_goals = self.mj_data.sensordata[2:38]
 
         return np.concatenate([
-            sensors_wo_goals.astype(np.float32),
-            self.mj_data.body("ball").xpos.astype(np.float32)
-        ])
+            self.mj_data.body("ball").xpos,
+            sensors_wo_goals
+        ]).astype(np.float32)
 
     def close(self):
         if self.renderer is not None:

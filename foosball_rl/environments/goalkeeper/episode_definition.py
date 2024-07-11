@@ -26,21 +26,21 @@ class GoalkeeperEpisodeDefinition(EpisodeDefinition):
             qpos = self.mj_data.qpos.copy()
             qvel = self.mj_data.qvel.copy()
 
-        ball_x_coordinate = WHITE_STRIKER_X_POSITION + PLAYER_BALL_DISTANCE_INCREMENT
-        ball_y_coordinate = self.np_random.uniform(low=-0.1, high=0.1)
-        ball_z_coordinate = FIELD_HEIGHT
+        ball_x_pos = WHITE_STRIKER_X_POSITION + PLAYER_BALL_DISTANCE_INCREMENT
+        ball_y_pos = self.np_random.uniform(low=-0.1, high=0.1)
+        ball_z_pos = FIELD_HEIGHT
 
-        ball_x_velocity, ball_y_velocity = self._calculate_axis_velocities(ball_x_coordinate,
-                                                                           ball_y_coordinate,
-                                                                           BLACK_GOAL_X_POSITION,
-                                                                           y_target_range=[-ABS_GOAL_Y_SYMMETRIC_BOUND,
-                                                                                           ABS_GOAL_Y_SYMMETRIC_BOUND],
-                                                                           velocity=1.2)
-        qpos[0] = ball_x_coordinate
-        qpos[1] = ball_y_coordinate
-        qpos[2] = ball_z_coordinate
-        qvel[0] = ball_x_velocity
-        qvel[1] = ball_y_velocity
+        ball_x_vel, ball_y_vel = self._calculate_axis_velocities(ball_x_pos,
+                                                                 ball_y_pos,
+                                                                 BLACK_GOAL_X_POSITION,
+                                                                 y_target_range=[-ABS_GOAL_Y_SYMMETRIC_BOUND,
+                                                                                 ABS_GOAL_Y_SYMMETRIC_BOUND],
+                                                                 velocity=1.2)
+        qpos[0] = ball_x_pos
+        qpos[1] = ball_y_pos
+        qpos[2] = ball_z_pos
+        qvel[0] = ball_x_vel
+        qvel[1] = ball_y_vel
         self.mj_data.qpos[:] = qpos
         self.mj_data.qvel[:] = qvel
 

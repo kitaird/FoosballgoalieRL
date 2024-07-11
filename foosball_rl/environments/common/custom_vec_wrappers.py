@@ -3,11 +3,23 @@ from typing import Callable, Dict
 import numpy as np
 from stable_baselines3.common.vec_env import VecEnv, VecEnvWrapper
 from stable_baselines3.common.vec_env.base_vec_env import VecEnvStepReturn, VecEnvObs
+from foosball_rl.environments.constants import WHITE_GOAL_X_POSITION
+
+WHITE_GOAL_X_Y_COORDINATES = np.array([WHITE_GOAL_X_POSITION, 0])
+
+
+def euclidean_distance(obs: np.ndarray) -> np.ndarray:
+    if isinstance(obs, Dict):
+        obs = obs['observation']  # Handling GoalConditionedWrapper
+    ball_positions = obs[:, 0:2]
+    goal_position = np.ones(ball_positions.shape, dtype=np.float32) * WHITE_GOAL_X_Y_COORDINATES
+    return -np.linalg.norm(ball_positions-goal_position, axis=-1)
+
 
 WEIGHTING_FACTOR = np.array([0.8, 0.2])
 
 
-def potential_function(obs: np.ndarray) -> np.ndarray:
+def weighted_stepwise_function(obs: np.ndarray) -> np.ndarray:
     if isinstance(obs, Dict):
         obs = obs['observation']  # Handling GoalConditionedWrapper
     ball_positions = obs[:, 0:2]
@@ -44,7 +56,7 @@ class VecPBRSWrapper(VecEnvWrapper):
     WARNING: Works currently only with feature-based observations, not images.
     """
     def __init__(self, venv: VecEnv,
-                 potential_f: Callable[[np.ndarray], np.ndarray] = potential_function,
+                 potential_f: Callable[[np.ndarray], np.ndarray] = euclidean_distance,
                  gamma: float = 0.99):
         VecEnvWrapper.__init__(self, venv, venv.observation_space, venv.action_space)
         self.venv = venv

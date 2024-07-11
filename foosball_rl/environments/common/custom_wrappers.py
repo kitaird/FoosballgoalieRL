@@ -18,9 +18,9 @@ class GoalEnvWrapper(gym.Wrapper):
         self.original_observation_space = env.observation_space
         self.observation_space = self._make_observation_space()
         self.desired_goal = np.zeros(self.original_observation_space.shape[0])
-        self.desired_goal[0:3] = np.array(
-            [WHITE_GOAL_X_POSITION, 0.0, FIELD_HEIGHT])  # Where the ball should ideally be from the perspective of the
-        # black team. The other dimensions are irrelevant as they are not used for the reward calculation
+        self.desired_goal[0:2] = np.array(
+            [WHITE_GOAL_X_POSITION, 0.0])  # Where the ball should ideally be from the perspective of the black team.
+        # The other dimensions are irrelevant as they are not used for the reward calculation
 
     def _make_observation_space(self) -> gym.Space:
         return spaces.Dict({
@@ -51,7 +51,6 @@ class GoalEnvWrapper(gym.Wrapper):
     def compute_reward(self, achieved_goal: Union[int, np.ndarray], desired_goal: Union[int, np.ndarray],
                        _info: Optional[Dict[str, Any]]) -> np.float32:
         # As we are using a vectorized version, we need to keep track of the `batch_size`
-        # As we are using a vectorized version, we need to keep track of the `batch_size`
         if isinstance(achieved_goal, int):
             batch_size = 1
         else:
@@ -59,11 +58,10 @@ class GoalEnvWrapper(gym.Wrapper):
 
         reshaped_achieved_goal = np.array(achieved_goal).reshape(batch_size, -1)
         reshaped_desired_goal = np.array(desired_goal).reshape(batch_size, -1)
-        achieved_ball_pos = reshaped_achieved_goal[:, 0:3]
-        desired_ball_pos = reshaped_desired_goal[:, 0:3]
+        achieved_ball_pos = reshaped_achieved_goal[:, 0:2]
+        desired_ball_pos = reshaped_desired_goal[:, 0:2]
 
-        distance = np.linalg.norm(achieved_ball_pos - desired_ball_pos, axis=-1)
-        return -(distance > 0).astype(np.float32)
+        return -np.linalg.norm(achieved_ball_pos - desired_ball_pos, axis=-1)
 
 
 class AddActionToObservationsWrapper(Wrapper):

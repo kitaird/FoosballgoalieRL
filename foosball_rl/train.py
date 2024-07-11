@@ -8,7 +8,7 @@ import yaml
 from stable_baselines3 import HerReplayBuffer  # noqa: F401
 from stable_baselines3.common.base_class import BaseAlgorithm
 from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList, ProgressBarCallback, EvalCallback
-from stable_baselines3.common.vec_env import VecNormalize, unwrap_vec_wrapper
+from stable_baselines3.common.vec_env import VecNormalize, unwrap_vec_wrapper, VecEnv
 
 from foosball_rl.misc.config import save_run_info, get_run_config
 from foosball_rl.create_env import create_envs, create_eval_envs
@@ -68,11 +68,20 @@ def get_model(algo: str, env, seed: int, experiment_path: Path) -> tuple[BaseAlg
     logger.info("Training with alg %s and hyperparameters: %s", algo, hyperparams)
 
     # Update discount-factor in relevant wrappers
-    unwrap_vec_wrapper(env, VecNormalize).gamma = float(hyperparams['gamma'])
-    unwrap_vec_wrapper(env, VecPBRSWrapper).gamma = float(hyperparams['gamma'])
+    update_discount_factor(env, float(hyperparams['gamma']))
 
     return (ALGOS[algo](env=env, seed=seed, tensorboard_log=(experiment_path / 'tensorboard').__str__(), **hyperparams),
             hyperparams)
+
+
+def update_discount_factor(venv: VecEnv, discount_factor: float):
+    vec_normalize = unwrap_vec_wrapper(venv, VecNormalize)
+    if vec_normalize is not None:
+        vec_normalize.gamma = discount_factor
+
+    vec_pbrs = unwrap_vec_wrapper(venv, VecPBRSWrapper)
+    if vec_pbrs is not None:
+        vec_pbrs.gamma = discount_factor
 
 
 def get_callbacks(env, experiment_path: Path, seed: int):
@@ -95,7 +104,7 @@ def get_callbacks(env, experiment_path: Path, seed: int):
 
     if callback_config['use_checkpoint_callback']:
         callbacks.append(CheckpointCallback(
-            name_prefix=f"rl_model",
+            name_prefix="rl_model",
             save_freq=int(callback_config['checkpoint_save_freq']),
             save_path=(experiment_path / f'seed-{seed}' / 'checkpoints').__str__(),
             save_replay_buffer=callback_config['checkpoint_save_replay_buffer'],

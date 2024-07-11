@@ -24,15 +24,15 @@ sac:
   # MultiInputPolicy when using HER
   policy : MlpPolicy
   verbose: 0
-  gamma : 0.9
-  learning_rate : 0.00141357
-  batch_size : 2048
-  buffer_size : 100000
-  learning_starts : 10000
-  train_freq : 128
-  tau : 0.01
+  gamma : 0.99
+#  learning_rate : 0.00141357
+#  batch_size : 2048
+#  buffer_size : 1000000
+#  learning_starts : 10000
+#  train_freq : 128
+#  tau : 0.01
+#  policy_kwargs: dict(log_std_init=--2.37931609, net_arch=[256, 256])
 #  replay_buffer_class: HerReplayBuffer  # HerReplayBuffer only works with MultiInputPolicy
-  policy_kwargs: dict(log_std_init=--2.37931609, net_arch=[256, 256])
 
 td3:
   policy : MlpPolicy

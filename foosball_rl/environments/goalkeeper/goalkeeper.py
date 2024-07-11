@@ -195,9 +195,9 @@ class Goalkeeper(gym.Env):
         sensors_wo_goals = self.mj_data.sensordata[2:12]
 
         return np.concatenate([
-            sensors_wo_goals.astype(np.float32),
-            self.mj_data.body("ball").xpos.astype(np.float32)
-        ])
+            self.mj_data.body("ball").xpos,
+            sensors_wo_goals
+        ]).astype(np.float32)
 
     def close(self):
         if self.renderer is not None:
