@@ -1,62 +1,95 @@
-import ast
 import importlib
-import json
-from configparser import ConfigParser
+import logging
 from pathlib import Path
+from typing import Dict, Any
 
-from stable_baselines3 import HerReplayBuffer
-from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList
+import yaml
+from stable_baselines3 import HerReplayBuffer  # noqa: F401
+from stable_baselines3.common.base_class import BaseAlgorithm
+from stable_baselines3.common.callbacks import CheckpointCallback, CallbackList, ProgressBarCallback, EvalCallback
+from stable_baselines3.common.vec_env import VecNormalize, unwrap_vec_wrapper
 
-from foosball_rl.environments.common.custom_callbacks import TensorboardCallback
-from foosball_rl.config.config import save_run_info
-from foosball_rl.create_env import create_env
+from foosball_rl.misc.config import save_run_info, get_run_config
+from foosball_rl.create_env import create_envs, create_eval_envs
+from foosball_rl.environments.common.custom_callbacks import TensorboardCallback, \
+    SaveVecNormalizeAndRolloutBufferCallback
+from foosball_rl.environments.common.custom_vec_wrappers import VecPBRSWrapper
+from foosball_rl.misc.utils import ALGOS
 
-tensorboard_aggregator = importlib.import_module('tensorboard-aggregator.aggregator')
+tensorboard_aggregator = importlib.import_module('foosball_rl.tensorboard-aggregator.aggregator')
+logger = logging.getLogger(__name__)
 
 
-def train_loop(env_id: str, config: ConfigParser, training_path: Path, algorithm_class):
-    for seed in json.loads(config['Training']['seeds']):
-        env = create_env(env_id=env_id, config=config, seed=seed, video_logging_path=training_path)
-        train(config=config, seed=seed, env=env, experiment_path=training_path, algorithm_class=algorithm_class)
+def train_loop(env_id: str, algo: str, training_path: Path):
+    training_config = get_run_config()['Training']
+    for seed in training_config['seeds']:
+        logging.info("Creating %s %s envs with seed %s", training_config['n_envs'], env_id, seed)
+        env = create_envs(env_id=env_id, n_envs=training_config['n_envs'], seed=seed,
+                          video_logging_path=training_path, vec_normalize_path=training_config['vec_normalize_load_path'])
+        train(algo=algo, env=env, seed=seed, experiment_path=training_path)
     tensorboard_aggregator.main(path_arg=training_path / 'tensorboard')
 
 
-def train(config: ConfigParser, seed: int, experiment_path: Path, algorithm_class, env):
-    alg_config = config['Algorithm']
-    policy_kwargs = ast.literal_eval(alg_config['policy_kwargs']) if config.has_option('Algorithm', 'policy_kwargs') else None
+def train(algo: str, env, seed: int, experiment_path: Path):
+    model, used_hyperparams = get_model(algo=algo, env=env, seed=seed, experiment_path=experiment_path)
 
-    model = algorithm_class(env=env, seed=seed, verbose=1,
-                            device=alg_config['device'],
-                            policy=alg_config['policy'],
-                            gamma=alg_config.getfloat('discount_factor'),
-                            policy_kwargs=policy_kwargs,
-                            tensorboard_log=experiment_path / 'tensorboard',
-                            replay_buffer_class=globals()[alg_config['replay_buffer_class']],
-                            ################################
-                            # Add here more hyperparameters if needed, following the above scheme
-                            # hyperparameter_name=alg_config['hyperparameter_name']
-                            # Make sure to pass the correct type, as parsing might not always work as expected
-                            ################################
-                            )
+    save_run_info(hyperparams=used_hyperparams, venv=env, save_path=experiment_path, seed=seed)
 
-    save_run_info(run_config=config, venv=env, save_path=experiment_path, seed=seed,
-                  algorithm_name=type(model).__name__)
-
-    training_config = config['Training']
-    model.learn(total_timesteps=training_config.getint('total_timesteps'), tb_log_name=training_config['tb_log_name'],
-                callback=get_callbacks(config, experiment_path, seed))
+    training_config = get_run_config()['Training']
+    tb_log_name = training_config['tb_log_name'] + f'_seed_{seed}'
+    model.learn(total_timesteps=training_config['total_timesteps'], tb_log_name=tb_log_name,
+                callback=get_callbacks(env, experiment_path, seed))
     env.close()
 
 
-def get_callbacks(config: ConfigParser, experiment_path: Path, seed: int):
-    callback_config = config['Callbacks']
-    checkpoint_callback = CheckpointCallback(name_prefix=f"rl_model_seed_{seed}",
-                                             save_freq=int(callback_config['save_freq']),
-                                             save_path=(experiment_path / 'checkpoints').__str__(),
-                                             save_replay_buffer=callback_config.getboolean('save_replay_buffer'),
-                                             save_vecnormalize=callback_config.getboolean('save_vecnormalize'))
-    logging_callback = TensorboardCallback()
+def get_model(algo: str, env, seed: int, experiment_path: Path) -> tuple[BaseAlgorithm, Dict[str, Any]]:
+    with open(Path(__file__).parent / 'hyperparams.yml') as f:
+        hyperparams_dict = yaml.safe_load(f)
+
+    hyperparams = hyperparams_dict[algo]
+    for kwargs_key in {"policy_kwargs", "replay_buffer_class", "replay_buffer_kwargs"}:
+        if kwargs_key in hyperparams.keys() and isinstance(hyperparams[kwargs_key], str):
+            hyperparams[kwargs_key] = eval(hyperparams[kwargs_key])
+
+    logger.info("Training with alg %s and hyperparameters: %s", algo, hyperparams)
+
+    # Update discount-factor in relevant wrappers
+    unwrap_vec_wrapper(env, VecNormalize).gamma = float(hyperparams['gamma'])
+    unwrap_vec_wrapper(env, VecPBRSWrapper).gamma = float(hyperparams['gamma'])
+
+    return (ALGOS[algo](env=env, seed=seed, tensorboard_log=(experiment_path / 'tensorboard').__str__(), **hyperparams),
+            hyperparams)
+
+
+def get_callbacks(env, experiment_path: Path, seed: int):
+    callback_config = get_run_config()['Callbacks']
+
+    eval_path = experiment_path / f'seed-{seed}' / 'eval'
+    eval_callback = EvalCallback(
+        eval_env=create_eval_envs(env_id=env.unwrapped.get_attr('spec')[0].id,
+                                  n_envs=callback_config['eval_n_envs'],
+                                  seed=callback_config['eval_seed'],
+                                  video_logging_path=eval_path / 'video'),
+        callback_on_new_best=SaveVecNormalizeAndRolloutBufferCallback(save_freq=1, save_path=eval_path / 'best'),
+        best_model_save_path=(eval_path / 'best').__str__(),
+        n_eval_episodes=callback_config['eval_n_episodes'],
+        log_path=(eval_path / 'log').__str__(),
+        eval_freq=callback_config['eval_freq'],
+        deterministic=callback_config['eval_deterministic'],
+    )
+    callbacks = [eval_callback, TensorboardCallback()]
+
+    if callback_config['use_checkpoint_callback']:
+        callbacks.append(CheckpointCallback(
+            name_prefix=f"rl_model",
+            save_freq=int(callback_config['checkpoint_save_freq']),
+            save_path=(experiment_path / f'seed-{seed}' / 'checkpoints').__str__(),
+            save_replay_buffer=callback_config['checkpoint_save_replay_buffer'],
+            save_vecnormalize=callback_config['checkpoint_save_vecnormalize']))
+
+    if callback_config['show_progress_bar']:
+        callbacks.append(ProgressBarCallback())
     ############################################
     # Add more callbacks here if needed
     ############################################
-    return CallbackList([checkpoint_callback, logging_callback])
+    return CallbackList(callbacks)

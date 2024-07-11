@@ -1,0 +1,9 @@
+Environment:
+    step_frequency : 16  # Step frequency
+    render_mode : human  # Allowed: null, human, rgb_array
+    use_image_obs : False
+
+EpisodeDefinition:
+    end_episode_on_struck_goal : True
+    end_episode_on_conceded_goal : True
+    reset_goalie_position_on_episode_start : True

@@ -1,6 +1,6 @@
 import logging
-from configparser import ConfigParser
 from pathlib import Path
+from typing import Dict, Any
 
 import gymnasium as gym
 import mujoco
@@ -84,7 +84,7 @@ class Foosball(gym.Env):
                  render_mode: str = None,
                  use_image_obs: bool = False,
                  episode_definition: EpisodeDefinition = None,
-                 env_config: ConfigParser = None):
+                 env_config: Dict[str, Any] = None):
         super().__init__()
         self.logger = logging.getLogger(self.__class__.__name__)
         self._env_config = env_config
@@ -227,5 +227,5 @@ class Foosball(gym.Env):
         self._mj_data = value
 
     @property
-    def env_config(self) -> ConfigParser:
+    def env_config(self) -> Dict[str, Any]:
         return self._env_config

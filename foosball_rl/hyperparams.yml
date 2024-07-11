@@ -1,0 +1,65 @@
+a2c:
+  policy: MlpPolicy
+  verbose: 0
+  gamma: 0.99
+  learning_rate: 7e-4
+
+ddpg:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+dqn:
+  policy: MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+ppo:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+  policy_kwargs: dict(net_arch=dict(vf=[64, 64], pi=[64, 64]))
+
+sac:
+  # MultiInputPolicy when using HER
+  policy : MlpPolicy
+  verbose: 0
+  gamma : 0.9
+  learning_rate : 0.00141357
+  batch_size : 2048
+  buffer_size : 100000
+  learning_starts : 10000
+  train_freq : 128
+  tau : 0.01
+#  replay_buffer_class: HerReplayBuffer  # HerReplayBuffer only works with MultiInputPolicy
+  policy_kwargs: dict(log_std_init=--2.37931609, net_arch=[256, 256])
+
+td3:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+ars:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+qrdqn:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+tqc:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+trpo:
+  policy : MlpPolicy
+  verbose: 0
+  gamma: 0.99
+
+ppo_lstm:
+  policy : MlpLstmPolicy
+  verbose: 0
+  gamma: 0.99

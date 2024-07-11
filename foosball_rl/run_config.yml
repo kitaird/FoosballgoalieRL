@@ -1,0 +1,52 @@
+Common:
+    experiment_name : TestRunXXXXX5
+    # Possible values: train, test
+    mode : test
+    # Possible values: Foosball-v0, Goalkeeper-v0
+    env_id : Goalkeeper-v0
+    # Possible values: a2c, ddpg, dqn, ppo, sac, td3, ars, qrdqn, tqc, trpo, ppo_lstm
+    algorithm : ppo
+
+Wrapper:
+    # Turn this on if you want to use Hindisght Experience Replay (HERReplayBuffer), you must still specify HER
+    # in the algorithm's hyperparameters
+    use_goal_env_wrapper : False
+    # Action space (discrete, multi-discrete, continuous)
+    action_space : continuous
+    # Binning parameters for (multi-)discrete action space
+    lateral_bins : 5
+    angular_bins : 5
+
+Training:
+    seeds : [100, 200, 300]
+    n_envs : 4
+    total_timesteps : !!float 1e5
+    tb_log_name : training_run
+    vec_normalize_load_path : null
+
+Testing:
+    eval_seed : 1
+    n_envs : 1
+    model_path : experiments/TestRunXXXXX5/training/seed-100/eval/best/best_model.zip
+    vec_normalize_load_path : experiments/TestRunXXXXX5/training/seed-100/eval/best/vecnormalize.pkl
+    num_eval_episodes : 100
+
+Callbacks:
+    show_progress_bar : True
+    use_checkpoint_callback : False
+    checkpoint_save_freq : !!float 5e4
+    checkpoint_save_replay_buffer : True
+    checkpoint_save_vecnormalize : True
+    eval_n_envs : 1
+    eval_seed : 10
+    eval_n_episodes : 25
+    eval_save_vecnormalize : True
+    eval_freq : !!float 1e4
+    eval_deterministic : True
+
+VideoRecording:
+    # Works only if the environment render_mode == 'rgb_array', doesn't support human rendering and recording
+    record_videos : True
+    video_interval : !!float 25e3
+    video_length : 1000
+    video_log_path_suffix : videos

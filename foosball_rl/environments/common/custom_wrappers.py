@@ -19,8 +19,8 @@ class GoalConditionedWrapper(gym.Wrapper):
         self.observation_space = self._make_observation_space()
         self.desired_goal = np.zeros(self.original_observation_space.shape[0])
         self.desired_goal[0:3] = np.array(
-            [WHITE_GOAL_X_POSITION, 0.0, FIELD_HEIGHT])  # Where the ball should ideally be
-        # The other dimensions are irrelevant as they are not used for the reward calculation
+            [WHITE_GOAL_X_POSITION, 0.0, FIELD_HEIGHT])  # Where the ball should ideally be from the perspective of the
+        # black team. The other dimensions are irrelevant as they are not used for the reward calculation
 
     def _make_observation_space(self) -> gym.Space:
         return spaces.Dict({
