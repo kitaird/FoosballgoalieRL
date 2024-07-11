@@ -1,5 +1,6 @@
-import importlib
 import logging
+import tensorboard_reducer as tbr
+from glob import glob
 from pathlib import Path
 from typing import Dict, Any
 
@@ -16,7 +17,6 @@ from foosball_rl.environments.common.custom_callbacks import TensorboardCallback
 from foosball_rl.environments.common.custom_vec_wrappers import VecPBRSWrapper
 from foosball_rl.misc.utils import ALGOS
 
-tensorboard_aggregator = importlib.import_module('foosball_rl.tensorboard-aggregator.aggregator')
 logger = logging.getLogger(__name__)
 
 
@@ -27,7 +27,21 @@ def train_loop(env_id: str, algo: str, training_path: Path):
         env = create_envs(env_id=env_id, n_envs=training_config['n_envs'], seed=seed,
                           video_logging_path=training_path, vec_normalize_path=training_config['vec_normalize_load_path'])
         train(algo=algo, env=env, seed=seed, experiment_path=training_path)
-    tensorboard_aggregator.main(path_arg=training_path / 'tensorboard')
+    aggregate_results(training_path)
+
+
+def aggregate_results(training_path):
+    tensorboard_path = training_path / 'tensorboard'
+    reduce_ops = ("mean", "min", "max", "median", "std", "var")
+    events_dict = tbr.load_tb_events(sorted(glob(tensorboard_path.__str__() + '/*')))
+    n_scalars = len(events_dict)
+    n_steps, n_events = list(events_dict.values())[0].shape
+    logger.info("Loaded %s TensorBoard runs with %s scalars and %s steps each", n_events, n_scalars, n_steps)
+    reduced_events = tbr.reduce_events(events_dict, reduce_ops)
+    output_path = tensorboard_path / "aggregates" / "operation"
+    for op in reduce_ops:
+        logger.debug("Writing \'%s\' reduction to \'%s-%s\'", op, output_path, op)
+    tbr.write_tb_events(reduced_events, output_path.__str__(), overwrite=False)
 
 
 def train(algo: str, env, seed: int, experiment_path: Path):
