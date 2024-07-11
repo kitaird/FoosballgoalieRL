@@ -9,7 +9,7 @@ from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 
 from foosball_rl.environments.common.custom_vec_wrappers import VecPBRSWrapper
 from foosball_rl.environments.common.custom_wrappers import DiscreteActionWrapper, MultiDiscreteActionWrapper, \
-    AddActionToObservationsWrapper, GoalConditionedWrapper
+    AddActionToObservationsWrapper, GoalEnvWrapper
 from foosball_rl.misc.config import get_run_config
 from foosball_rl.misc.utils import get_applied_gym_wrappers, get_applied_vecenv_wrappers
 
@@ -47,7 +47,7 @@ def log_used_wrappers(venv: VecEnv):
 def apply_env_wrappers(env: Union[gym.Env, gym.Wrapper]):
     env = AddActionToObservationsWrapper(env)
     if get_run_config()['Wrapper']['use_goal_env_wrapper']:
-        env = GoalConditionedWrapper(env)  # When using HER
+        env = GoalEnvWrapper(env)  # When using HER
     env = get_action_space_wrapper(env)
     return env
 

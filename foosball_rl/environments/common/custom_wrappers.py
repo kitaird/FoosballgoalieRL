@@ -10,7 +10,7 @@ from gymnasium.core import WrapperActType, ActType, WrapperObsType
 from foosball_rl.environments.constants import WHITE_GOAL_X_POSITION, FIELD_HEIGHT
 
 
-class GoalConditionedWrapper(gym.Wrapper):
+class GoalEnvWrapper(gym.Wrapper):
 
     def __init__(self, env: gym.Env):
         super().__init__(env)
