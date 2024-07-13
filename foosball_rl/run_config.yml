@@ -26,8 +26,8 @@ Training:
 Testing:
     eval_seed : 1
     n_envs : 1
-    model_path : experiments/TestRunXXXXX5/training/seed-100/eval/best/best_model.zip
-    vec_normalize_load_path : experiments/TestRunXXXXX5/training/seed-100/eval/best/vecnormalize.pkl
+    model_path : experiments/TestRun/training/seed-100/eval/best/best_model.zip
+    vec_normalize_load_path : experiments/TestRun/training/seed-100/eval/best/vecnormalize.pkl
     num_eval_episodes : 100
 
 Callbacks:
