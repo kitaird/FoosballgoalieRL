@@ -2,7 +2,8 @@ import numpy as np
 
 from foosball_rl.environments.base_episode_definition import EpisodeDefinition
 from foosball_rl.environments.constants import FIELD_HEIGHT
-from foosball_rl.environments.constraints import ball_outside_table, black_goal_scored, white_goal_scored
+from foosball_rl.environments.constraints import ball_outside_table, ball_in_black_goal_bounds, \
+    ball_in_white_goal_bounds
 
 
 class FoosballEpisodeDefinition(EpisodeDefinition):
@@ -29,8 +30,9 @@ class FoosballEpisodeDefinition(EpisodeDefinition):
         self.mj_data.qvel[:] = qvel
 
     def is_truncated(self) -> bool:
-        return ball_outside_table(self.mj_data.body("ball").xpos)
+        return ball_outside_table(self.mj_data.qpos[0:3].copy())
 
     def is_terminated(self) -> bool:
-        ball_pos = self.mj_data.body("ball").xpos
-        return black_goal_scored(self.mj_data.sensor, ball_pos) or white_goal_scored(self.mj_data.sensor, ball_pos)
+        ball_pos = self.mj_data.qpos[0:3].copy()
+        return (self.mj_data.sensordata[0].copy() > 0 or ball_in_black_goal_bounds(ball_pos)) or (
+                    self.mj_data.sensordata[1].copy() > 0 or ball_in_white_goal_bounds(ball_pos))

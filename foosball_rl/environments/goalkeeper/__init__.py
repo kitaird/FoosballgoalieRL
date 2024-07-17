@@ -18,7 +18,7 @@ goalkeeper_id = 'Goalkeeper-v0'
 
 gym.register(
     id=goalkeeper_id,
-    entry_point='foosball_rl.environments.goalkeeper.goalkeeper:Goalkeeper',
+    entry_point='foosball_rl.environments.goalkeeper.goalkeeper:RawEnv',
     max_episode_steps=1000,
     kwargs={
         'step_frequency': env_cfg['Environment']['step_frequency'],

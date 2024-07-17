@@ -9,8 +9,6 @@ WHITE_GOAL_X_Y_COORDINATES = np.array([WHITE_GOAL_X_POSITION, 0])
 
 
 def euclidean_distance(obs: np.ndarray) -> np.ndarray:
-    if isinstance(obs, Dict):
-        obs = obs['observation']  # Handling GoalConditionedWrapper
     ball_positions = obs[:, 0:2]
     goal_position = np.ones(ball_positions.shape, dtype=np.float32) * WHITE_GOAL_X_Y_COORDINATES
     return -np.linalg.norm(ball_positions-goal_position, axis=-1)
@@ -20,28 +18,12 @@ WEIGHTING_FACTOR = np.array([0.8, 0.2])
 
 
 def weighted_stepwise_function(obs: np.ndarray) -> np.ndarray:
-    if isinstance(obs, Dict):
-        obs = obs['observation']  # Handling GoalConditionedWrapper
     ball_positions = obs[:, 0:2]
-    potentials = np.column_stack([
-        ball_x_potential(ball_positions[:, 0]),
-        ball_y_potential(ball_positions[:, 1])
-    ])
+    x_potentials = ball_positions[:, 0] * 0.8217 + 0.5  # x: [-0.6085 , 0.6085], 0 ≤ x_pot ≤ 1
+    y_potentials = np.abs(ball_positions[:, 1]) * -2.08 + 0.71  # y: [-0.34 , 0.34], symmetrical around 0, 0 ≤ y_pot ≤ 1
+    potentials = np.column_stack([x_potentials, y_potentials])
     clipped_potentials = np.clip(potentials, 0, 1)
     return np.dot(clipped_potentials, WEIGHTING_FACTOR)
-
-
-def ball_x_potential(x):
-    # x: [-0.6085 , 0.6085]
-    # 0 ≤ x_pot ≤ 1
-    return x * 0.8217 + 0.5
-
-
-def ball_y_potential(y):
-    # y: [-0.34 , 0.34]
-    # symmetrical around 0
-    # 0 ≤ y_pot ≤ 1
-    return np.abs(y) * -2.08 + 0.71
 
 
 class VecPBRSWrapper(VecEnvWrapper):
@@ -70,9 +52,9 @@ class VecPBRSWrapper(VecEnvWrapper):
         return obs
 
     def step_wait(self) -> VecEnvStepReturn:
-        observations, rewards, dones, infos = self.venv.step_wait()
-        current_potentials = self.potential(observations)
+        obs, rewards, dones, infos = self.venv.step_wait()
+        current_potentials = self.potential(obs) if not isinstance(obs, Dict) else self.potential(obs['observation'])
         potential_differences = self.gamma * current_potentials - self.last_potentials
         self.last_potentials = current_potentials
         rewards += potential_differences
-        return observations, rewards, dones, infos
+        return obs, rewards, dones, infos

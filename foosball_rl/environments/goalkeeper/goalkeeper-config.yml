@@ -1,6 +1,6 @@
 Environment:
     step_frequency : 16  # Step frequency
-    render_mode : human  # Allowed: null, human, rgb_array
+    render_mode : null  # Allowed: null, human, rgb_array
     use_image_obs : False
 
 EpisodeDefinition:

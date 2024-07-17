@@ -1,15 +1,16 @@
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import gymnasium as gym
-from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import VecVideoRecorder, VecEnv, unwrap_vec_wrapper, VecCheckNan
 from stable_baselines3.common.vec_env.vec_normalize import VecNormalize
 
-from foosball_rl.environments.common.custom_vec_wrappers import VecPBRSWrapper
-from foosball_rl.environments.common.custom_wrappers import DiscreteActionWrapper, MultiDiscreteActionWrapper, \
-    AddActionToObservationsWrapper, GoalEnvWrapper
+from foosball_rl.environments.common.wrappers.action_space_wrappers import get_action_space_wrapper, \
+    AddActionToObservationsWrapper
+from foosball_rl.environments.common.wrappers.custom_vec_wrappers import VecPBRSWrapper
+from foosball_rl.environments.common.wrappers.custom_wrappers import GoalEnvWrapper
+from foosball_rl.environments.common.register import make_vec_env
 from foosball_rl.misc.config import get_run_config
 from foosball_rl.misc.utils import get_applied_gym_wrappers, get_applied_vecenv_wrappers
 
@@ -29,6 +30,7 @@ def create_envs(env_id: str, n_envs: int, seed: int, video_logging_path: Optiona
 
 
 def create_eval_envs(env_id: str, n_envs: int, seed: int, video_logging_path: Optional[Path], vec_normalize_path: str = None):
+    logging.info("Eval envs: Creating %s %s eval envs with seed %s", n_envs, env_id, seed)
     venv = create_envs(env_id, n_envs, seed, video_logging_path, vec_normalize_path)
     vec_normalize = unwrap_vec_wrapper(venv, VecNormalize)
     vec_normalize.training = False
@@ -44,41 +46,28 @@ def log_used_wrappers(venv: VecEnv):
     logger.info("-" * 100)
 
 
-def apply_env_wrappers(env: Union[gym.Env, gym.Wrapper]):
+def apply_env_wrappers(env: gym.Env | gym.Wrapper):
     env = AddActionToObservationsWrapper(env)
-    if get_run_config()['Wrapper']['use_goal_env_wrapper']:
+    wrapper_conf = get_run_config()['Wrapper']
+    if wrapper_conf['use_goal_env_wrapper']:
         env = GoalEnvWrapper(env)  # When using HER
-    env = get_action_space_wrapper(env)
+    env = get_action_space_wrapper(env, wrapper_conf)
     return env
 
 
 def apply_vec_env_wrappers(venv: VecEnv, vec_normalize_path: str = None):
     venv = VecPBRSWrapper(venv)
-    if vec_normalize_path is not None:
-        logger.info("Using normalized environment from %s", vec_normalize_path)
-        venv = VecNormalize.load(venv=venv, load_path=vec_normalize_path)
-    else:
-        logger.info("Creating new normalized environment")
-        venv = VecNormalize(venv=venv)
+    venv = add_vec_normalize(venv, vec_normalize_path)
     venv = VecCheckNan(venv, raise_exception=True, warn_once=False)
     return venv
 
 
-def get_action_space_wrapper(env: gym.Env):
-    wrapper_conf = get_run_config()['Wrapper']
-    action_space = wrapper_conf['action_space']
-    if action_space == 'continuous':
-        return env
-    elif action_space == 'discrete':
-        return DiscreteActionWrapper(env=env, lateral_bins=wrapper_conf['lateral_bins'],
-                                     angular_bins=wrapper_conf['angular_bins'])
-    elif action_space == 'multi-discrete':
-        return MultiDiscreteActionWrapper(env=env, lateral_bins=wrapper_conf['lateral_bins'],
-                                          angular_bins=wrapper_conf['angular_bins'])
-    else:
-        logger.error("Only \'continuous\', \'discrete\' and \'multi-discrete\' action spaces are supported"
-                     "when using create_env.action_space_wrapper")
-        raise ValueError(f"Unknown action space wrapper {action_space}")
+def add_vec_normalize(venv: VecEnv, vec_normalize_path: str) -> VecNormalize:
+    if vec_normalize_path is not None:
+        logger.info("Using normalized environment from %s", vec_normalize_path)
+        return VecNormalize.load(venv=venv, load_path=vec_normalize_path)
+    logger.info("Creating new normalized environment")
+    return VecNormalize(venv=venv)
 
 
 def enable_video_recording(venv: VecEnv, seed: int, video_logging_path: Optional[Path]):

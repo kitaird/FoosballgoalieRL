@@ -14,7 +14,7 @@ from foosball_rl.misc.config import save_run_info, get_run_config
 from foosball_rl.create_env import create_envs, create_eval_envs
 from foosball_rl.environments.common.custom_callbacks import TensorboardCallback, \
     SaveVecNormalizeAndRolloutBufferCallback
-from foosball_rl.environments.common.custom_vec_wrappers import VecPBRSWrapper
+from foosball_rl.environments.common.wrappers.custom_vec_wrappers import VecPBRSWrapper
 from foosball_rl.misc.utils import ALGOS
 
 logger = logging.getLogger(__name__)
@@ -24,8 +24,8 @@ def train_loop(env_id: str, algo: str, training_path: Path):
     training_config = get_run_config()['Training']
     for seed in training_config['seeds']:
         logging.info("Creating %s %s envs with seed %s", training_config['n_envs'], env_id, seed)
-        env = create_envs(env_id=env_id, n_envs=training_config['n_envs'], seed=seed,
-                          video_logging_path=training_path, vec_normalize_path=training_config['vec_normalize_load_path'])
+        env = create_envs(env_id=env_id, n_envs=training_config['n_envs'], seed=seed, video_logging_path=training_path,
+                          vec_normalize_path=training_config['vec_normalize_load_path'])
         train(algo=algo, env=env, seed=seed, experiment_path=training_path)
     aggregate_results(training_path)
 
@@ -84,23 +84,25 @@ def update_discount_factor(venv: VecEnv, discount_factor: float):
         vec_pbrs.gamma = discount_factor
 
 
-def get_callbacks(env, experiment_path: Path, seed: int):
+def get_callbacks(venv, experiment_path: Path, seed: int):
     callback_config = get_run_config()['Callbacks']
+    callbacks = [TensorboardCallback()]
 
-    eval_path = experiment_path / f'seed-{seed}' / 'eval'
-    eval_callback = EvalCallback(
-        eval_env=create_eval_envs(env_id=env.unwrapped.get_attr('spec')[0].id,
-                                  n_envs=callback_config['eval_n_envs'],
-                                  seed=callback_config['eval_seed'],
-                                  video_logging_path=eval_path / 'video'),
-        callback_on_new_best=SaveVecNormalizeAndRolloutBufferCallback(save_freq=1, save_path=eval_path / 'best'),
-        best_model_save_path=(eval_path / 'best').__str__(),
-        n_eval_episodes=callback_config['eval_n_episodes'],
-        log_path=(eval_path / 'log').__str__(),
-        eval_freq=callback_config['eval_freq'],
-        deterministic=callback_config['eval_deterministic'],
-    )
-    callbacks = [eval_callback, TensorboardCallback()]
+    if callback_config['use_eval_callback']:
+        eval_path = experiment_path / f'seed-{seed}' / 'eval'
+        eval_callback = EvalCallback(
+            eval_env=create_eval_envs(env_id=venv.unwrapped.envs[0].spec.id,
+                                      n_envs=callback_config['eval_n_envs'],
+                                      seed=callback_config['eval_seed'],
+                                      video_logging_path=eval_path / 'video'),
+            callback_on_new_best=SaveVecNormalizeAndRolloutBufferCallback(save_freq=1, save_path=eval_path / 'best'),
+            best_model_save_path=(eval_path / 'best').__str__(),
+            n_eval_episodes=callback_config['eval_n_episodes'],
+            log_path=(eval_path / 'log').__str__(),
+            eval_freq=callback_config['eval_freq'],
+            deterministic=callback_config['eval_deterministic'],
+        )
+        callbacks.append(eval_callback)
 
     if callback_config['use_checkpoint_callback']:
         callbacks.append(CheckpointCallback(

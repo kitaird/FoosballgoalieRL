@@ -3,7 +3,7 @@ Common:
     # Possible values: train, test
     mode : train
     # Possible values: Foosball-v0, Goalkeeper-v0
-    env_id : Foosball-v0
+    env_id : Goalkeeper-v0
     # Possible values: a2c, ddpg, dqn, ppo, sac, td3, ars, qrdqn, tqc, trpo, ppo_lstm
     algorithm : ppo
 
@@ -36,6 +36,7 @@ Callbacks:
     checkpoint_save_freq : !!float 5e4
     checkpoint_save_replay_buffer : True
     checkpoint_save_vecnormalize : True
+    use_eval_callback: True
     eval_n_envs : 1
     eval_seed : 10
     eval_n_episodes : 25

@@ -3,8 +3,8 @@ import numpy as np
 from foosball_rl.environments.base_episode_definition import EpisodeDefinition
 from foosball_rl.environments.constants import PLAYER_BALL_DISTANCE_INCREMENT, WHITE_STRIKER_X_POSITION, \
     BLACK_GOAL_X_POSITION, FIELD_HEIGHT, ABS_GOAL_Y_SYMMETRIC_BOUND
-from foosball_rl.environments.constraints import ball_outside_table, black_goal_scored, white_goal_scored, ball_stopped, \
-    ball_outside_player_space
+from foosball_rl.environments.constraints import ball_outside_table, ball_stopped, \
+    ball_outside_player_space, ball_in_black_goal_bounds, ball_in_white_goal_bounds
 
 
 class GoalkeeperEpisodeDefinition(EpisodeDefinition):
@@ -45,16 +45,19 @@ class GoalkeeperEpisodeDefinition(EpisodeDefinition):
         self.mj_data.qvel[:] = qvel
 
     def is_truncated(self) -> bool:
-        ball_velocity = self.mj_data.qvel[0:2]
-        ball_position = self.mj_data.qpos[0:2]
-        ball_stopped_outside_goalie_space = (ball_stopped(ball_velocity) and
-                                             ball_outside_player_space(ball_position, "b_g"))
-        return ball_outside_table(ball_position) or ball_stopped_outside_goalie_space
+        ball_position = self.mj_data.qpos[0:2].copy()
+        if ball_outside_table(ball_position):
+            return True
+        ball_velocity = self.mj_data.qvel[0:2].copy()
+        return ball_stopped(ball_velocity) and ball_outside_player_space(ball_position, "b_g")
 
     def is_terminated(self) -> bool:
-        ball_pos = self.mj_data.body("ball").xpos
-        return self.end_episode_on_conceded_goal and black_goal_scored(self.mj_data.sensor, ball_pos) or \
-            self.end_episode_on_struck_goal and white_goal_scored(self.mj_data.sensor, ball_pos)
+        ball_pos = self.mj_data.qpos[0:3].copy()
+        return ((self.end_episode_on_conceded_goal and
+                 (self.mj_data.sensordata[0].copy() > 0 or ball_in_black_goal_bounds(ball_pos)))
+                or
+                (self.end_episode_on_struck_goal and
+                 (self.mj_data.sensordata[1].copy() > 0 or ball_in_white_goal_bounds(ball_pos))))
 
     def _calculate_axis_velocities(self, x_start, y_start, x_target, y_target_range, velocity):
         """

@@ -31,11 +31,3 @@ def ball_in_black_goal_bounds(ball_pos) -> bool:
 
 def ball_in_white_goal_bounds(ball_pos) -> bool:
     return WHITE_GOAL_X_BOUNDS[0] < ball_pos[0] < WHITE_GOAL_X_BOUNDS[1] and ball_in_goal_bounds(ball_pos)
-
-
-def black_goal_scored(sensors, ball_pos) -> bool:
-    return sensors("black_goal_sensor").data[0] > 0 or ball_in_black_goal_bounds(ball_pos)
-
-
-def white_goal_scored(sensors, ball_pos) -> bool:
-    return sensors("white_goal_sensor").data[0] > 0 or ball_in_white_goal_bounds(ball_pos)

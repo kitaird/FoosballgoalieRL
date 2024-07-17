@@ -1,3 +1,47 @@
+"""
+Kicker environment for reinforcement learning.
+
+Dimensions of the playing field:
+- Long side of the kicker (x-axis) : [-0.67, 0.67]
+- Short side of the kicker (y-axis): [-0.355, 0.355]
+- Height of the kicker (z-axis): [0.0, 0.9]
+
+Meaning of mujoco sensors:
+-     0: white goal sensor
+-     1: black goal sensor
+-   2-4: ball velocity sensor (x,y,z)
+-   5-7: ball accelerator sensor (x,y,z)
+-     8: black goalie lateral position sensor
+-     9: black goalie lateral velocity sensor
+-    10: black goalie angular position sensor
+-    11: black goalie angular velocity sensor
+
+Meaning of mujoco actuators:
+-    0: black goalie lateral actuator
+-    1: black goalie angular actuator
+
+Meaning of qpos (positions)
+-     0: ball position x
+-     1: ball position y
+-     2: ball position z
+-     3: ball quaternion w
+-     4: ball quaternion x
+-     5: ball quaternion y
+-     6: ball quaternion z
+-     7: black goalie lateral
+-     8: black goalie angular
+
+Meaning of qvel (velocities):
+-     0: ball lateral x
+-     1: ball lateral y
+-     2: ball lateral z
+-     3: ball angular x
+-     4: ball angular y
+-     5: ball angular z
+-     6: black goalie lateral
+-     7: black goalie angular
+
+"""
 import logging
 from pathlib import Path
 from typing import Dict, Any
@@ -8,55 +52,13 @@ import numpy as np
 
 from foosball_rl.environments.base_episode_definition import EpisodeDefinition
 from foosball_rl.environments.common.viewer import MujocoViewer
-from foosball_rl.environments.constraints import black_goal_scored, white_goal_scored
+from foosball_rl.environments.constraints import ball_in_black_goal_bounds, \
+    ball_in_white_goal_bounds
 from foosball_rl.environments.goalkeeper.episode_definition import GoalkeeperEpisodeDefinition
 
 
-class Goalkeeper(gym.Env):
-    """
-    Kicker environment for reinforcement learning.
+class RawEnv(gym.Env):
 
-    Dimensions of the playing field:
-    - Long side of the kicker (x-axis) : [-0.67, 0.67]
-    - Short side of the kicker (y-axis): [-0.355, 0.355]
-    - Height of the kicker (z-axis): [0.0, 0.9]
-
-    Meaning of mujoco sensors:
-    -     0: white goal sensor
-    -     1: black goal sensor
-    -   2-4: ball velocity sensor (x,y,z)
-    -   5-7: ball accelerator sensor (x,y,z)
-    -     8: black goalie lateral position sensor
-    -     9: black goalie lateral velocity sensor
-    -    10: black goalie angular position sensor
-    -    11: black goalie angular velocity sensor
-
-    Meaning of mujoco actuators:
-    -    0: black goalie lateral actuator
-    -    1: black goalie angular actuator
-
-    Meaning of qpos (positions)
-    -     0: ball position x
-    -     1: ball position y
-    -     2: ball position z
-    -     3: ball quaternion w
-    -     4: ball quaternion x
-    -     5: ball quaternion y
-    -     6: ball quaternion z
-    -     7: black goalie lateral
-    -     8: black goalie angular
-
-    Meaning of qvel (velocities):
-    -     0: ball lateral x
-    -     1: ball lateral y
-    -     2: ball lateral z
-    -     3: ball angular x
-    -     4: ball angular y
-    -     5: ball angular z
-    -     6: black goalie lateral
-    -     7: black goalie angular
-
-    """
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "render_fps": 30
@@ -77,11 +79,11 @@ class Goalkeeper(gym.Env):
         self.use_image_obs = use_image_obs
         if self.use_image_obs:
             assert self.render_mode == "rgb_array", "Image observations are only supported with render_mode='rgb_array'"
-        self.episode_definition = episode_definition if episode_definition is not None else GoalkeeperEpisodeDefinition()
 
         xml_path = (Path(__file__).resolve().parent / "goalkeeper.xml").as_posix()
         self.mj_model: mujoco.MjModel = mujoco.MjModel.from_xml_path(xml_path)
         self._mj_data: mujoco.MjData = mujoco.MjData(self.mj_model)
+        self.episode_definition = episode_definition if episode_definition is not None else GoalkeeperEpisodeDefinition()
         self.episode_definition.mj_data = self.mj_data
 
         self.nr_substeps = 1
@@ -93,9 +95,9 @@ class Goalkeeper(gym.Env):
         self.action_space = self._initialize_action_space()
         self.observation_space = self._initialize_observation_space()
 
-        self.log_initialization()
+        self._log_initialization()
 
-    def log_initialization(self):
+    def _log_initialization(self):
         self.logger.info("Initialized Goalkeeper Environment with episode definition: %s", self.episode_definition)
         self.logger.info("Using Observation Space: %s", self.observation_space)
         self.logger.info("Using Action Space: %s", self.action_space)
@@ -161,11 +163,10 @@ class Goalkeeper(gym.Env):
             return self._feature_vector_obs()
 
     def _get_reward(self):
-        ball_pos = self.mj_data.body("ball").xpos
-        sensors = self.mj_data.sensor
+        ball_pos = self.mj_data.qpos[0:3].copy()
 
-        black_conceded = black_goal_scored(sensors, ball_pos)
-        white_conceded = white_goal_scored(sensors, ball_pos)
+        black_conceded = self.mj_data.sensordata[0].copy() > 0 or ball_in_black_goal_bounds(ball_pos)
+        white_conceded = self.mj_data.sensordata[1].copy() > 0 or ball_in_white_goal_bounds(ball_pos)
 
         assert not (black_conceded and white_conceded)
 
@@ -189,14 +190,14 @@ class Goalkeeper(gym.Env):
             return None
         if self.render_mode == "rgb_array":
             self.renderer.update_scene(self.mj_data, self.camera_id)
-            return self.renderer.render()
+            return self.renderer.render().copy()
 
     def _feature_vector_obs(self):
         sensors_wo_goals = self.mj_data.sensordata[2:12]
 
         return np.concatenate([
-            self.mj_data.body("ball").xpos,
-            sensors_wo_goals
+            self.mj_data.qpos[0:3].copy(),
+            sensors_wo_goals.copy()
         ]).astype(np.float32)
 
     def close(self):

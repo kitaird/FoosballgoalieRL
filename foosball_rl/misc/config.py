@@ -38,7 +38,7 @@ def save_run_info(hyperparams: Dict[str, Any], venv, save_path: Path, seed: int)
         f.write(f'VecEnv Wrappers: {get_applied_vecenv_wrappers(venv)}\n')
         f.write(LINE_SEPARATOR)
         f.write('Environment Arguments\n')
-        env_cfg = venv.unwrapped.get_attr('env_config')[0]
+        env_cfg = venv.unwrapped.envs[0].env_config
         for k, v in env_cfg.items():
             f.write(f'{k}\n')
             for i in v.items():
@@ -52,18 +52,3 @@ def save_run_info(hyperparams: Dict[str, Any], venv, save_path: Path, seed: int)
         # print_cfg(f, run_config)
         f.write(LINE_SEPARATOR)
         f.write('')
-
-# def convert_to_dict(cfg: ConfigParser):
-#     cfg_dict = {s: dict(cfg[s].items()) for s in cfg.sections()}
-#     return cfg_dict
-
-
-# def print_cfg(f, cfg: ConfigParser):
-#     for section in cfg.sections():
-#         for k, v in section.items():
-#             if isinstance(v, dict):
-#                 f.write(LINE_SEPARATOR)
-#                 f.write(f'{k}\n')
-#                 for i in v.items():
-#                     f.write(f'\t{i}\n')
-#                 f.write(LINE_SEPARATOR)
