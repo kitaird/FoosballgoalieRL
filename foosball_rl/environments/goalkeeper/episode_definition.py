@@ -1,3 +1,6 @@
+import time
+from typing import Optional
+
 import numpy as np
 
 from foosball_rl.environments.base_episode_definition import EpisodeDefinition
@@ -12,11 +15,16 @@ class GoalkeeperEpisodeDefinition(EpisodeDefinition):
     def __init__(self,
                  end_episode_on_struck_goal: bool = True,
                  end_episode_on_conceded_goal: bool = True,
-                 reset_goalie_position_on_episode_start: bool = True):
+                 reset_goalie_position_on_episode_start: bool = True,
+                 end_episode_on_ball_stopped: bool = True,
+                 ball_stopped_time_threshold_in_s: float = 5):
         super().__init__()
         self.end_episode_on_struck_goal: bool = end_episode_on_struck_goal
         self.end_episode_on_conceded_goal: bool = end_episode_on_conceded_goal
         self.reset_goalie_position_on_episode_start: bool = reset_goalie_position_on_episode_start
+        self.end_episode_on_ball_stopped: bool = end_episode_on_ball_stopped
+        self.ball_stopped_time_threshold_in_s: float = ball_stopped_time_threshold_in_s
+        self._ball_stopped_since: Optional[float] = None
 
     def initialize_episode(self):
         if self.reset_goalie_position_on_episode_start:
@@ -49,7 +57,9 @@ class GoalkeeperEpisodeDefinition(EpisodeDefinition):
         if ball_outside_table(ball_position):
             return True
         ball_velocity = self.mj_data.qvel[0:2].copy()
-        return ball_stopped(ball_velocity) and ball_outside_player_space(ball_position, "b_g")
+        self._ball_stopped_since = time.time() if ball_stopped(ball_velocity) else None
+        return self._ball_stopped_since is not None and ball_outside_player_space(ball_position, "b_g") or \
+                self.ball_stopped_exceeded_threshold()
 
     def is_terminated(self) -> bool:
         ball_pos = self.mj_data.qpos[0:3].copy()
@@ -58,6 +68,11 @@ class GoalkeeperEpisodeDefinition(EpisodeDefinition):
                 or
                 (self.end_episode_on_struck_goal and
                  (self.mj_data.sensordata[1].copy() > 0 or ball_in_white_goal_bounds(ball_pos))))
+
+    def ball_stopped_exceeded_threshold(self) -> bool:
+        return (self.end_episode_on_ball_stopped and
+                self._ball_stopped_since is not None and
+                time.time() - self._ball_stopped_since > self.ball_stopped_time_threshold_in_s)
 
     def _calculate_axis_velocities(self, x_start, y_start, x_target, y_target_range, velocity):
         """
