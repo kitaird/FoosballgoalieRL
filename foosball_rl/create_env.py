@@ -11,8 +11,8 @@ from foosball_rl.environments.common.wrappers.action_space_wrappers import get_a
 from foosball_rl.environments.common.wrappers.custom_vec_wrappers import VecPBRSWrapper
 from foosball_rl.environments.common.wrappers.custom_wrappers import GoalEnvWrapper
 from foosball_rl.environments.common.register import make_vec_env
-from foosball_rl.misc.config import get_run_config
-from foosball_rl.misc.utils import get_applied_gym_wrappers, get_applied_vecenv_wrappers
+from foosball_rl.utils.config import get_run_config
+from foosball_rl.utils.utils import get_applied_gym_wrappers, get_applied_vecenv_wrappers
 
 logger = logging.getLogger(__name__)
 

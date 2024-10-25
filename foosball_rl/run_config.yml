@@ -31,18 +31,19 @@ Testing:
     num_eval_episodes : 100
 
 Callbacks:
-    show_progress_bar : True
-    use_checkpoint_callback : False
-    checkpoint_save_freq : !!float 5e4
-    checkpoint_save_replay_buffer : True
-    checkpoint_save_vecnormalize : True
-    use_eval_callback: True
-    eval_n_envs : 1
-    eval_seed : 10
-    eval_n_episodes : 25
-    eval_save_vecnormalize : True
-    eval_freq : !!float 1e5
-    eval_deterministic : True
+    use_eval_callback: False
+    EvalCallback:
+        eval_n_envs: 1
+        eval_seed: 10
+        eval_n_episodes: 25
+        eval_freq: !!float 1e5
+        eval_deterministic: True
+    use_checkpoint_callback: False
+    CheckpointCallback:
+        checkpoint_save_freq: !!float 5e4
+        checkpoint_save_replay_buffer: True
+        checkpoint_save_vecnormalize: True
+    use_progress_bar_callback: True
 
 VideoRecording:
     # Works only if the environment render_mode == 'rgb_array', doesn't support human rendering and recording

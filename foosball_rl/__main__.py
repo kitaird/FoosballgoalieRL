@@ -4,12 +4,12 @@ from pathlib import Path
 
 import yaml
 
-with open(Path(__file__).parent / 'misc' / 'logging.yml') as f:
+with open(Path(__file__).parent / 'utils' / 'logging.yml') as f:
     log_cfg = yaml.safe_load(f)
     logging.config.dictConfig(log_cfg)
 
 import foosball_rl.environments  # noqa: F401
-from foosball_rl.misc.config import get_run_config
+from foosball_rl.utils.config import get_run_config
 from foosball_rl.train import train_loop
 from foosball_rl.eval import evaluate_model
 

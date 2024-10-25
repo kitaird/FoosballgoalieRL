@@ -6,9 +6,9 @@ from typing import Dict, Any
 
 from stable_baselines3.common.evaluation import evaluate_policy
 
-from foosball_rl.misc.config import get_run_config
+from foosball_rl.utils.config import get_run_config
 from foosball_rl.create_env import create_eval_envs
-from foosball_rl.misc.utils import ALGOS
+from foosball_rl.utils.utils import ALGOS
 
 logger = logging.getLogger(__name__)
 
