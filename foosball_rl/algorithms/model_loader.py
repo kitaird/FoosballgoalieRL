@@ -30,25 +30,25 @@ ALGOS: Dict[str, Type[BaseAlgorithm]] = {
 
 
 def get_model(algo: str, env, seed: int, experiment_path: Path) -> tuple[BaseAlgorithm, Dict[str, Any]]:
-    hyperparams = get_hyperparams(algo)
+    hyperparameter = get_hyperparameter(algo)
 
-    logger.info("Training with alg %s and hyperparameters: %s", algo, hyperparams)
+    logger.info("Training with alg %s and hyperparameters: %s", algo, hyperparameter)
 
     # Update discount-factor in relevant wrappers
-    update_discount_factor(env, float(hyperparams['gamma']))
+    update_discount_factor(env, float(hyperparameter['gamma']))
 
-    return (ALGOS[algo](env=env, seed=seed, tensorboard_log=(experiment_path / 'tensorboard').__str__(), **hyperparams),
-            hyperparams)
+    return (ALGOS[algo](env=env, seed=seed, tensorboard_log=(experiment_path / 'tensorboard').__str__(), **hyperparameter),
+            hyperparameter)
 
 
-def get_hyperparams(algo):
-    with open(Path(__file__).parent / 'hyperparams.yml') as f:
-        hyperparams_dict = yaml.safe_load(f)
-    hyperparams = hyperparams_dict[algo]
+def get_hyperparameter(algo):
+    with open(Path(__file__).parent / 'hyperparameter.yml') as f:
+        hyperparameter_dict = yaml.safe_load(f)
+    hyperparameter = hyperparameter_dict[algo]
     for kwargs_key in {"policy_kwargs", "replay_buffer_class", "replay_buffer_kwargs"}:
-        if kwargs_key in hyperparams.keys() and isinstance(hyperparams[kwargs_key], str):
-            hyperparams[kwargs_key] = eval(hyperparams[kwargs_key])
-    return hyperparams
+        if kwargs_key in hyperparameter.keys() and isinstance(hyperparameter[kwargs_key], str):
+            hyperparameter[kwargs_key] = eval(hyperparameter[kwargs_key])
+    return hyperparameter
 
 
 def update_discount_factor(venv: VecEnv, discount_factor: float):

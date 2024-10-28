@@ -68,7 +68,7 @@ The action space is defined as follows:
 A reward of `1` is given to the goalie for scoring a goal and a reward of `-1` is given to the goalie for conceding goal.
 
 ## Episode definition
-The environment configuration file `foosball_rl/environments/goalkeeper/goalkeeper-config.yml` contains an `Environment`- and an `EpisodeDefinition`-section. The `Environment`-section is described in the environment [README file](https://github.com/kitaird/foosballrl/blob/develop/foosball_rl/environments/README.md). The `EpisodeDefinition`-section contains the following parameters: 
+The environment configuration file `foosball_rl/environments/goalkeeper/goalkeeper-config.yml` contains an `Environment`- and an `EpisodeDefinition`-section. The `Environment`-section is described in the [Environments README file](https://github.com/kitaird/FoosballRL/blob/develop/foosball_rl/environments/README.md). The `EpisodeDefinition`-section contains the following parameters: 
  - `EpisodeDefinition`: 
     - `end_episode_on_struck_goal`: Whether to end the episode when the ball enters the opponent's goal.
     - `end_episode_on_conceded_goal`: Whether to end the episode when the ball enters the own goal.

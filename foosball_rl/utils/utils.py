@@ -34,7 +34,7 @@ def get_used_wrappers(venv: VecEnv):
            LINE_SEPARATOR
 
 
-def log_experiment_config(hyperparams: Dict[str, Any], venv, save_path: Path, seed: int):
+def log_experiment_config(hyperparameter: Dict[str, Any], venv, save_path: Path, seed: int):
     if not save_path.exists():
         save_path.mkdir(parents=True, exist_ok=True)
 
@@ -50,7 +50,7 @@ def log_experiment_config(hyperparams: Dict[str, Any], venv, save_path: Path, se
         f.write(f"Algorithm: {common_config['algorithm']}\n")
         f.write(LINE_SEPARATOR)
         f.write('Hyperparameters\n')
-        for k, v in hyperparams.items():
+        for k, v in hyperparameter.items():
             f.write(f'{k}: {v}\n')
         f.write(LINE_SEPARATOR)
         f.write('Applied wrappers\n')

@@ -23,8 +23,8 @@ def train_loop(env_id: str, algo: str, training_path: Path):
     aggregate_results(training_path)
 
 def train(algo: str, env, seed: int,experiment_path: Path, training_config):
-    model, used_hyperparams = get_model(algo=algo, env=env, seed=seed, experiment_path=experiment_path)
-    log_experiment_config(hyperparams=used_hyperparams, venv=env, save_path=experiment_path, seed=seed)
+    model, used_hyperparameter = get_model(algo=algo, env=env, seed=seed, experiment_path=experiment_path)
+    log_experiment_config(hyperparameter=used_hyperparameter, venv=env, save_path=experiment_path, seed=seed)
 
     tb_log_name = training_config['tb_log_name'] + f'_seed_{seed}'
     model.learn(total_timesteps=training_config['total_timesteps'], tb_log_name=tb_log_name,
