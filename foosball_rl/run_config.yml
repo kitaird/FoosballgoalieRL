@@ -1,20 +1,31 @@
 Common:
     experiment_name : TestRun
-    # Possible values: train, test
-    mode : train
-    # Possible values: Foosball-v0, Goalkeeper-v0
-    env_id : Goalkeeper-v0
-    # Possible values: a2c, ddpg, dqn, ppo, sac, td3, ars, qrdqn, tqc, trpo, ppo_lstm
-    algorithm : ppo
+    mode : train  # Possible values: train, eval
+    env_id : Goalkeeper-v0  # Possible values: Goalkeeper-v0, Foosball-v0
+    algorithm : ppo  # Possible values: a2c, ddpg, dqn, ppo, sac, td3, ars, qrdqn, tqc, trpo, ppo_lstm
 
 Wrapper:
-    # Turn this on if you want to use Hindsight Experience Replay (HerReplayBuffer), you must still specify HER in the algorithm's hyperparameters
-    use_goal_env_wrapper : False
-    # Action space (discrete, multi-discrete, continuous)
-    action_space : continuous
-    # Binning parameters for (multi-)discrete action space
-    lateral_bins : 5
-    angular_bins : 5
+    EnvWrapper:
+        use_add_actions_to_observation_wrapper: False  # If false, the observations won't contain the taken actions
+        use_goal_env_wrapper : False  # Turn this on if you want to use Hindsight Experience Replay (HerReplayBuffer), you must still specify HER in the algorithm's hyperparameters
+        use_action_space_wrapper: False
+        ActionSpaceWrapper :
+            action_space : multi_discrete  # Possible values: continuous, discrete, multi_discrete
+            lateral_bins : 5
+            angular_bins : 5
+    VecEnvWrapper:
+        use_vec_pbrs_wrapper: False
+        use_vec_normalize_wrapper: True
+        VecNormalizeWrapper:
+            norm_obs: True
+            norm_reward: True
+            clip_obs: 10
+            clip_reward: 10
+        use_video_recording_wrapper: True  # Works only if the environment render_mode == 'rgb_array', doesn't support human rendering and recording
+        VecVideoRecorderWrapper:
+            video_length: 1000
+            video_interval: !!float 2e5
+            video_log_path_suffix: videos
 
 Training:
     seeds : [100, 200, 300]
@@ -23,14 +34,15 @@ Training:
     tb_log_name : training_run
     vec_normalize_load_path : null
 
-Testing:
+Evaluation:
     eval_seed : 1
-    n_envs : 1
+    n_eval_envs : 1
     model_path : experiments/TestRun/training/seed-100/eval/best/best_model.zip
     vec_normalize_load_path : experiments/TestRun/training/seed-100/eval/best/vecnormalize.pkl
-    num_eval_episodes : 100
+    n_eval_episodes : 100
 
 Callbacks:
+    use_tensorboard_callback: True
     use_eval_callback: False
     EvalCallback:
         eval_n_envs: 1
@@ -44,10 +56,3 @@ Callbacks:
         checkpoint_save_replay_buffer: True
         checkpoint_save_vecnormalize: True
     use_progress_bar_callback: True
-
-VideoRecording:
-    # Works only if the environment render_mode == 'rgb_array', doesn't support human rendering and recording
-    record_videos : False
-    video_interval : !!float 2e5
-    video_length : 1000
-    video_log_path_suffix : videos

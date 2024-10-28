@@ -33,11 +33,11 @@ def main():
         if training_path.exists():
             training_path = rewrite_path_if_exists(training_path)
         train_loop(env_id=env_id, algo=rl_algo, training_path=training_path)
-    elif experiment_mode == 'test':
-        testing_path = base_dir / 'testing'
-        if testing_path.exists():
-            testing_path = rewrite_path_if_exists(testing_path)
-        evaluate_model(env_id=env_id, algo=rl_algo, test_path=testing_path)
+    elif experiment_mode == 'eval':
+        evaluation_path = base_dir / 'evaluation'
+        if evaluation_path.exists():
+            evaluation_path = rewrite_path_if_exists(evaluation_path)
+        evaluate_model(env_id=env_id, algo=rl_algo, eval_path=evaluation_path)
     else:
         raise ValueError(f"Unknown mode: {experiment_mode}")
 
