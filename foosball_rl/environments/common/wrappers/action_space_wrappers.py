@@ -3,22 +3,23 @@ from typing import Any
 
 import gymnasium as gym
 import numpy as np
-from gymnasium import ActionWrapper, Wrapper
+from gymnasium import ActionWrapper
 from gymnasium.core import WrapperActType, ActType
 
 logger = logging.getLogger(__name__)
 
 
-def get_action_space_wrapper(env: gym.Env, wrapper_conf: dict[str, Any]) -> gym.Env:
-    action_space = wrapper_conf['action_space']
+def get_action_space_wrapper(env: gym.Env, action_space_wrapper_conf: dict[str, Any]) -> gym.Env:
+    action_space = action_space_wrapper_conf['action_space']
     if action_space == 'continuous':
+        logging.info("Env already has a continuous action space, won't wrap with any action space wrapper")
         return env
     elif action_space == 'discrete':
-        return DiscreteActionWrapper(env=env, lateral_bins=wrapper_conf['lateral_bins'],
-                                     angular_bins=wrapper_conf['angular_bins'])
+        return DiscreteActionWrapper(env=env, lateral_bins=action_space_wrapper_conf['lateral_bins'],
+                                     angular_bins=action_space_wrapper_conf['angular_bins'])
     elif action_space == 'multi-discrete':
-        return MultiDiscreteActionWrapper(env=env, lateral_bins=wrapper_conf['lateral_bins'],
-                                          angular_bins=wrapper_conf['angular_bins'])
+        return MultiDiscreteActionWrapper(env=env, lateral_bins=action_space_wrapper_conf['lateral_bins'],
+                                          angular_bins=action_space_wrapper_conf['angular_bins'])
     else:
         logger.error("Only \'continuous\', \'discrete\' and \'multi-discrete\' action spaces are supported"
                      "when using create_env.action_space_wrapper")
