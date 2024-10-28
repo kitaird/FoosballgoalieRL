@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-config_path = base_dir = Path(__file__).resolve().parent.parent / 'run_config.yml'
+config_path = Path(__file__).parent.parent / 'run_config.yml'
 
 
 def get_run_config():

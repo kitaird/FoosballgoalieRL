@@ -16,7 +16,7 @@ class TensorboardCallback(BaseCallback):
 
     def _on_step(self) -> bool:
         ################################
-        # Add custom tensorboard values here, e.g.:
+        # <<ExtensionPoint>>: You can add custom tensorboard values here, e.g.:
         # infos = self.locals["infos"][0]
         # self.logger.record("custom/ball_position_x", infos["ball_x_position"])
         ################################

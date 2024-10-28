@@ -1,6 +1,6 @@
 import functools
 
-import gym
+import gymnasium as gym
 import numpy as np
 from pettingzoo import ParallelEnv
 from pettingzoo.utils.env import AgentID, ObsType, ActionType

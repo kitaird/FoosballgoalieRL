@@ -80,7 +80,7 @@ class RawEnv(gym.Env):
         if self.use_image_obs:
             assert self.render_mode == "rgb_array", "Image observations are only supported with render_mode='rgb_array'"
 
-        xml_path = (Path(__file__).resolve().parent / "goalkeeper.xml").as_posix()
+        xml_path = (Path(__file__).parent / 'goalkeeper.xml').as_posix()
         self.mj_model: mujoco.MjModel = mujoco.MjModel.from_xml_path(xml_path)
         self._mj_data: mujoco.MjData = mujoco.MjData(self.mj_model)
         self.episode_definition = episode_definition if episode_definition is not None else GoalkeeperEpisodeDefinition()
