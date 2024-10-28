@@ -10,7 +10,10 @@ from foosball_rl.utils.config import get_run_config
 
 def get_callbacks(venv, seed: int, experiment_path: Path):
     callback_config = get_run_config()['Callbacks']
-    callbacks = [TensorboardCallback()]
+    callbacks = []
+
+    if callback_config['use_tensorboard_callback']:
+        callbacks.append(TensorboardCallback())
 
     if callback_config['use_eval_callback']:
         eval_callback = get_eval_callback(callback_config, experiment_path, seed, venv)
@@ -22,7 +25,7 @@ def get_callbacks(venv, seed: int, experiment_path: Path):
     if callback_config['use_progress_bar_callback']:
         callbacks.append(ProgressBarCallback())
     ############################################
-    # Add more callbacks here if needed
+    # <<ExtensionPoint>>: Add more callbacks here if needed
     ############################################
     return CallbackList(callbacks)
 
