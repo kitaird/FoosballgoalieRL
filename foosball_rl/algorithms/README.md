@@ -1,0 +1,2 @@
+# Hyperparameter Configuration
+The hyperparameter configuration file `foosball_rl/algorithms/hyperparams.yml` contains the hyperparameters for the supported training algorithms. The hyperparameters are defined for each algorithm separately. Check the documentation of the respective algorithm implementation for more information about the supported hyperparameters in [stable-baselines3](https://github.com/DLR-RM/stable-baselines3) and [stable-baselines3-contrib](https://github.com/Stable-Baselines-Team/stable-baselines3-contrib).
