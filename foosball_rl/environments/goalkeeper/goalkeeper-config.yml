@@ -1,11 +1,13 @@
 Environment:
-    step_frequency : 16  # Step frequency
-    render_mode : human  # Allowed: null, human, rgb_array
-    use_image_obs : False
+    horizon: 1000  # Maximum number of steps in an episode
+    step_frequency : 16  # The chosen action will be repeated for this many simulation steps
+    render_mode : rgb_array  # Allowed: null, human, rgb_array
+    use_image_obs : False  # Requires render_mode to be rgb_array
 
 EpisodeDefinition:
     end_episode_on_struck_goal : True
     end_episode_on_conceded_goal : True
-    reset_goalie_position_on_episode_start : True
     end_episode_on_ball_stopped : True
     ball_stopped_time_threshold_in_s : 4
+    reset_goalie_position_on_episode_start : True
+    #<<ExtensionPoint>>: You can add custom parameters here to further customize the episode definition

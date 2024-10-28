@@ -1,6 +1,8 @@
 Environment:
-    step_frequency : 16  # Step frequency
+    horizon: 1000  # Maximum number of steps in an episode
+    step_frequency : 16  # The chosen action will be repeated for this many simulation steps
     render_mode : human  # Allowed: null, human, rgb_array
+    use_image_obs : False  # Requires render_mode to be rgb_array
 
 EpisodeDefinition:
 # ...
