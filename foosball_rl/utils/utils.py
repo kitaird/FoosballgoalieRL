@@ -1,28 +1,10 @@
 from pathlib import Path
-from typing import Type, Dict, Any
+from typing import Dict, Any
 
 import gymnasium as gym
-from sb3_contrib import ARS, QRDQN, TQC, TRPO, RecurrentPPO
-from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3
-from stable_baselines3.common.base_class import BaseAlgorithm
 from stable_baselines3.common.vec_env import VecEnv, VecEnvWrapper
 
 from foosball_rl.utils.config import get_run_config
-
-ALGOS: Dict[str, Type[BaseAlgorithm]] = {
-    "a2c": A2C,
-    "ddpg": DDPG,
-    "dqn": DQN,
-    "ppo": PPO,
-    "sac": SAC,
-    "td3": TD3,
-    # SB3 Contrib,
-    "ars": ARS,
-    "qrdqn": QRDQN,
-    "tqc": TQC,
-    "trpo": TRPO,
-    "ppo_lstm": RecurrentPPO,
-}
 
 
 def get_applied_gym_wrappers(env: gym.Env):
@@ -43,7 +25,13 @@ def get_applied_vecenv_wrappers(venv: VecEnv):
     return wrappers
 
 
-LINE_SEPARATOR = '-----------------\n'
+LINE_SEPARATOR = '-' * 100 + '\n'
+
+
+def get_used_wrappers(venv: VecEnv):
+    return LINE_SEPARATOR + f"Gym Wrappers: {get_applied_gym_wrappers(venv.unwrapped.envs[0])}\n" + \
+           LINE_SEPARATOR + f"VecEnv Wrappers: {get_applied_vecenv_wrappers(venv)}\n" + \
+           LINE_SEPARATOR
 
 
 def log_experiment_config(hyperparams: Dict[str, Any], venv, save_path: Path, seed: int):
