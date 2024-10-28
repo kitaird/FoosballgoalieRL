@@ -10,8 +10,8 @@ with open(Path(__file__).parent / 'utils' / 'logging.yml') as f:
 
 import foosball_rl.environments  # noqa: F401
 from foosball_rl.utils.config import get_run_config
-from foosball_rl.train import train_loop
-from foosball_rl.eval import evaluate_model
+from foosball_rl.mode.train import train_loop
+from foosball_rl.mode.eval import evaluate_model
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def main():
     experiment_name = config['Common']['experiment_name']
     experiment_mode = config['Common']['mode']
     env_id = config['Common']['env_id']
-    base_dir = Path(__file__).resolve().parent.parent / 'experiments' / experiment_name
+    base_dir = Path(__file__).parent.parent / 'experiments' / experiment_name
 
     rl_algo = config['Common']['algorithm']
 

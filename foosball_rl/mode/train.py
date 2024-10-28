@@ -1,11 +1,11 @@
 import logging
 from pathlib import Path
 
-from foosball_rl.callback_configurator import get_callbacks
+from foosball_rl.setup.callback_configurator import get_callbacks
 from foosball_rl.utils.tensorboard_aggregator import aggregate_results
 from stable_baselines3 import HerReplayBuffer  # noqa: F401
 
-from foosball_rl.model_loader import get_model
+from foosball_rl.algorithms.model_loader import get_model
 from foosball_rl.create_env import create_envs
 from foosball_rl.utils.config import get_run_config
 from foosball_rl.utils.utils import log_experiment_config
