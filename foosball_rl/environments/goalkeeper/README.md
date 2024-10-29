@@ -7,7 +7,7 @@ The following section describes the configuration possibilities of this environm
 
 | Goalkeeper-v0                                                      |
 |--------------------------------------------------------------------|
-| ![Goalkeeper-v0 Environment](../../../resources/Goalkeeper-v0.png) |
+| ![Goalkeeper-v0 Environment](../../../example-images/Goalkeeper-v0.png) |
 
 ## Observation Space
 

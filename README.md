@@ -12,9 +12,9 @@ Video recording and multi-env training are also built-in. The training process c
 watched
 live using an interactive viewer. The tensorboard-results of multiple training runs are aggregated.
 
-| Foosball Environment                            | Multi-Environment Training                              |
-|-------------------------------------------------|---------------------------------------------------------|
-| ![Foosball-v0 Model](resources/Foosball-v0.png) | ![Multi-Env-Training](resources/Multi-Env-Training.png) |
+| Foosball Environment                                 | Multi-Environment Training                                   |
+|------------------------------------------------------|--------------------------------------------------------------|
+| ![Foosball-v0 Model](example-images/Foosball-v0.png) | ![Multi-Env-Training](example-images/Multi-Env-Training.png) |
 
 ## Installing
 
