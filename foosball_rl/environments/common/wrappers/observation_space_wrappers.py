@@ -3,11 +3,9 @@ from typing import Any
 
 import gymnasium as gym
 import numpy as np
-from gym import Wrapper
-from gym.core import ActType
 
 
-class AddActionToObservationsWrapper(Wrapper):
+class AddActionToObservationsWrapper(gym.Wrapper):
 
     def __init__(self, env: gym.Env):
         super().__init__(env)
@@ -34,7 +32,7 @@ class AddActionToObservationsWrapper(Wrapper):
         observation, info = self.env.reset(**kwargs)
         return np.concatenate([observation, np.zeros(self.action_space.shape)]), info
 
-    def step(self, action: ActType) -> Any:
+    def step(self, action: gym.core.ActType) -> Any:
         observation, reward, terminated, truncated, info = self.env.step(action)
         observation = np.concatenate([observation, action])
         return observation, reward, terminated, truncated, info

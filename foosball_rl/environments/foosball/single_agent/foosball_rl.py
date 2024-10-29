@@ -65,7 +65,6 @@ from typing import Dict, Any
 import gymnasium as gym
 import mujoco
 import numpy as np
-from gym.core import ObsType
 
 from foosball_rl.environments.common.viewer import MujocoViewer
 from foosball_rl.environments.constraints import ball_in_black_goal_bounds, \
@@ -153,7 +152,7 @@ class RawEnv(gym.Env):
 
         return self.get_observation(), {}
 
-    def step(self, actions) -> tuple[ObsType, float, bool, bool, dict[str, Any]]:
+    def step(self, actions) -> tuple[gym.core.ObsType, float, bool, bool, dict[str, Any]]:
         mj_ctrl = np.concatenate([np.array(a) for a in actions.values()]).reshape(16)
         for _ in range(self.nr_intermediate_steps):
             self.mj_data.ctrl = mj_ctrl
