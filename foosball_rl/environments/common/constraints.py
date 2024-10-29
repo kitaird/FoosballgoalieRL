@@ -1,6 +1,6 @@
 import numpy as np
 
-from foosball_rl.environments.constants import BALL_VELOCITY_THRESHOLD, MAX_GOAL_Z_BOUNDS, \
+from foosball_rl.environments.common.constants import BALL_VELOCITY_THRESHOLD, MAX_GOAL_Z_BOUNDS, \
     ABS_MAX_GOAL_Y_SYMMETRIC_BOUND, BLACK_GOAL_X_BOUNDS, WHITE_GOAL_X_BOUNDS, ABS_MAX_TABLE_X, ABS_MAX_TABLE_Y, \
     PLAYERS_POSITIONS, FIGURE_X_REACH_INCREMENT
 

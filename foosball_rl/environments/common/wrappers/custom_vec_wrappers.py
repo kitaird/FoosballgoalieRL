@@ -3,7 +3,7 @@ from typing import Callable, Dict
 import numpy as np
 from stable_baselines3.common.vec_env import VecEnv, VecEnvWrapper
 from stable_baselines3.common.vec_env.base_vec_env import VecEnvStepReturn, VecEnvObs
-from foosball_rl.environments.constants import WHITE_GOAL_X_POSITION
+from foosball_rl.environments.common.constants import WHITE_GOAL_X_POSITION
 
 WHITE_GOAL_X_Y_COORDINATES = np.array([WHITE_GOAL_X_POSITION, 0])
 

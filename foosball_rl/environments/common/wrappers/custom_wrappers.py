@@ -7,7 +7,7 @@ import numpy as np
 from gymnasium import spaces
 from gymnasium.core import WrapperActType, WrapperObsType
 
-from foosball_rl.environments.constants import WHITE_GOAL_X_POSITION
+from foosball_rl.environments.common.constants import WHITE_GOAL_X_POSITION
 
 
 def compute_reward(achieved_goal: int | np.ndarray, desired_goal: int | np.ndarray,

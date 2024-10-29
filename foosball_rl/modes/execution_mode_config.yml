@@ -1,0 +1,13 @@
+Training:
+    seeds : [100, 200, 300]
+    n_envs : 1
+    total_timesteps : !!float 1e6
+    tb_log_name : training_run
+    vec_normalize_load_path : null
+
+Evaluation:
+    eval_seed : 1
+    n_eval_envs : 1
+    model_path : experiments/TestRun/training/seed-100/eval/best/best_model.zip
+    vec_normalize_load_path : experiments/TestRun/training/seed-100/eval/best/vecnormalize.pkl
+    n_eval_episodes : 100

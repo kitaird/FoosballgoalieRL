@@ -4,42 +4,37 @@ from pathlib import Path
 
 import yaml
 
-with open(Path(__file__).parent / 'utils' / 'logging.yml') as f:
+from foosball_rl import EXPERIMENT_NAME, EXECUTION_MODE, ENV_ID, RL_ALGORITHM
+
+with open(Path(__file__).parent / 'logging' / 'logging_config.yml') as f:
     log_cfg = yaml.safe_load(f)
     logging.config.dictConfig(log_cfg)
 
 import foosball_rl.environments  # noqa: F401
-from foosball_rl.utils.config import get_run_config
-from foosball_rl.mode.train import train_loop
-from foosball_rl.mode.eval import evaluate_model
+from foosball_rl.modes.train import train_loop
+from foosball_rl.modes.eval import evaluate_model
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    config = get_run_config()
-    experiment_name = config['Common']['experiment_name']
-    experiment_mode = config['Common']['mode']
-    env_id = config['Common']['env_id']
-    base_dir = Path(__file__).parent.parent / 'experiments' / experiment_name
+    base_dir = Path(__file__).parent.parent / 'experiments' / EXPERIMENT_NAME
 
-    rl_algo = config['Common']['algorithm']
-
-    logger.info("Starting experiment %s in mode %s on environment %s", experiment_name, experiment_mode, env_id)
+    logger.info("Starting experiment %s with execution mode %s on environment %s", EXPERIMENT_NAME, EXECUTION_MODE, ENV_ID)
     logger.info("Using base directory %s for storing training/testing data and models", base_dir)
 
-    if experiment_mode == 'train':
+    if EXECUTION_MODE == 'train':
         training_path = base_dir / 'training'
         if training_path.exists():
             training_path = rewrite_path_if_exists(training_path)
-        train_loop(env_id=env_id, algo=rl_algo, training_path=training_path)
-    elif experiment_mode == 'eval':
+        train_loop(env_id=ENV_ID, algo=RL_ALGORITHM, training_path=training_path)
+    elif EXECUTION_MODE == 'eval':
         evaluation_path = base_dir / 'evaluation'
         if evaluation_path.exists():
             evaluation_path = rewrite_path_if_exists(evaluation_path)
-        evaluate_model(env_id=env_id, algo=rl_algo, eval_path=evaluation_path)
+        evaluate_model(env_id=ENV_ID, algo=RL_ALGORITHM, eval_path=evaluation_path)
     else:
-        raise ValueError(f"Unknown mode: {experiment_mode}")
+        raise ValueError(f"Unknown execution mode: {EXECUTION_MODE}")
 
 
 def rewrite_path_if_exists(path: Path):

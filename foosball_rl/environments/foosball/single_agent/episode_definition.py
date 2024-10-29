@@ -1,8 +1,8 @@
 import numpy as np
 
-from foosball_rl.environments.base_episode_definition import EpisodeDefinition
-from foosball_rl.environments.constants import FIELD_HEIGHT
-from foosball_rl.environments.constraints import ball_outside_table, ball_in_black_goal_bounds, \
+from foosball_rl.environments.common.base_episode_definition import EpisodeDefinition
+from foosball_rl.environments.common.constants import FIELD_HEIGHT
+from foosball_rl.environments.common.constraints import ball_outside_table, ball_in_black_goal_bounds, \
     ball_in_white_goal_bounds
 
 

@@ -1,56 +1,6 @@
 ## Run Configuration
 The run configuration file `foosball_rl/run_config.yml` contains the following sections:
-  - `Common`: 
-    - `experiment_name`: The experiment name, which is used to store the results in the `experiments` directory.
-    - `mode`: The execution mode `train` (= training new agents) or `eval` (= evaluating existing agents).
-    - `env_id`: The environment-id to use, either `Goalkeeper-v0` or `Foosball-v0`.
-    - `algorithm`: The algorithm to use for training. All algorithms from [stable-baselines3](https://github.com/DLR-RM/stable-baselines3) and [stable-baselines3-contrib](https://github.com/Stable-Baselines-Team/stable-baselines3-contrib) are supported.
-  - `Wrapper`: Contains parameters for the wrappers to use. The wrappers are used to modify the environment before training/evaluating.
-    - `EnvWrapper`: The environment wrappers to use. Each wrapper is applied to the environments separately.
-      - `use_add_actions_to_observation_wrapper`: Whether to use the `AddActionToObservationsWrapper` to add the last performed actions to the observation.
-      - `use_goal_env_wrapper`: Whether to use the `GoalEnvWrapper` to modify the environment to be compatible with the `GoalEnv` interface for the usage of Hindsight Experience Replay (HerReplayBuffer from [stable-baselines3](https://github.com/DLR-RM/stable-baselines3).
-      - `use_action_space_wrapper`: Whether to use the `DiscreteActionWrapper` or `MultiDiscreteActionWrapper` to discretize the action space.
-        - `ActionSpaceWrapper`: Properties for the `DiscreteActionWrapper` or `MultiDiscreteActionWrapper`.
-          - `action_space`: The action space to use, either `discrete` or `multi_discrete`. `Continuous` will not use any action space wrapper, as the action space is continuous by nature.
-          - `lateral_binning`: The number of bins for the lateral action space.
-          - `angular_binning`: The number of bins for the angular action space.
-    - `VecEnvWrapper`: The vectorized environment wrappers to use. In contrast to the `EnvWrapper`, the `VecEnvWrapper` is applied to the vectorized environments (i.e. to all parallel environments simultaneously).
-      - `use_vec_pbrs_wrapper`: Whether to use the `VecPBRSWrapper` to apply potential-based reward shaping (PBRS) to the environment.
-      - `use_vec_normalize_wrapper`: Whether to use the `VecNormalize` wrapper to normalize the observations and rewards.
-        - `VecNormalizeWrapper`: Properties for the `VecNormalize` wrapper.
-          - `norm_obs`: Whether to normalize the observations.
-          - `norm_reward`: Whether to normalize the rewards.
-          - `clip_obs`: Whether to clip the observations, and if so, the clipping range.
-          - `clip_reward`: Whether to clip the rewards, and if so, the clipping range.
-        - `use_video_recording_wrapper`: Whether to use the `VideoRecordingWrapper` to record videos of the training process. Works only if the environment's `render_mode=='rgb_array'`, doesn't support human rendering and recording in parallel.
-          - `VideoRecordingWrapper`: Properties for the `VideoRecordingWrapper`.
-            - `video_length`: The length of the videos in frames.
-            - `video_interval`: The frequency of recording videos.
-            - `video_log_path_suffix`: The suffix to append to the video log path.
-  - `Training`: Defines parameters for the training process:
-    - `seeds`: The random seeds to use for the training process. The number of seeds defines the number of training runs.
-    - `n_envs`: The number of parallel environments to use per training run. E.g if `seeds=[100, 200, 300]` and `n_envs=4`, the training process will run 3 training runs with 4 parallel environments each, assigning the seeds `[100, 101, 102, 103]` to the first run, `[200, 201, 202, 203]` to the second run, and `[300, 301, 302, 303]` to the third run. 
-    - `total_timesteps`: The total number of timesteps to train the agent per training run. E.g. if `n_envs=4` and `total_timesteps=1000`, the agent will be trained for 1000 timesteps in total, with 250 timesteps per environment.
-    - `tb_log_name`: The name of the tensorboard log.
-    - `vec_normalize_load_path`: The path to load a potential vec_normalize path (e.g. in the case of resuming training).
-  - `Evaluation`: Defines parameters for the evaluation process:
-    - `eval_seeds`: The random seed to use for the evaluation process. Only one seed is supported for evaluation.
-    - `n_eval_envs`: The number of parallel environments to use for evaluation. E.g. if `n_eval_envs=4`, the evaluation process will run 4 parallel environments.
-    - `model_path`: The path to the model to load.
-    - `vec_normalize_load_path`: The path to load a potential vec_normalize path (e.g. in the case of resuming training).
-    - `n_eval_episodes`: The number of episodes to evaluate. The episodes are split among the parallel environments.
-  - `Callbacks`: Defines parameters for the callbacks during training/evaluation:
-    - `use_tensorboard_callback`: Whether to use the Tensorboard logging.
-    - `use_eval_callback`: Whether to use the `EvalCallback` to evaluate the model during training.
-      - `EvalCallback`: Properties for the `EvalCallback`.
-        - `eval_n_envs`: The number of parallel environments to use for evaluation. E.g. if `eval_n_envs=4`, the evaluation process will run 4 parallel environments.
-        - `eval_seed`: The random seed to use for the evaluation process. Only one seed is supported for evaluation.
-        - `eval_n_episodes`: The number of episodes to evaluate. The episodes are split among the parallel environments.
-        - `eval_freq`: The frequency of intermediate evaluations in timesteps.
-        - `eval_deterministic`: Whether to use a deterministic policy for evaluation.
-      - `use_checkpoint_callback`: Whether to use the `CheckpointCallback` to save the model during training.
-        - `CheckpointCallback`: Properties for the `CheckpointCallback`.
-          - `checkpoint_save_freq`: The interval of saving the model in timesteps.
-          - `checkpoint_save_replay_buffer`: Whether to save the replay buffer if existing.
-          - `checkpoint_save_vecnormalize`: Whether to save the vec_normalize if existing.
-      - `use_progress_bar_callback`: Whether to use the `ProgressBarCallback` to display a progress bar during training.
+- `Experiment_name`: The experiment name, which is used to store the results in the `experiments` directory.
+- `Execution_Mode`: The execution mode `train` (= training new agents) or `eval` (= evaluating existing agents).
+- `Env_id`: The environment-id to use, either `Goalkeeper-v0` or `Foosball-v0`.
+- `Algorithm`: The algorithm to use for training. All algorithms from [stable-baselines3](https://github.com/DLR-RM/stable-baselines3) and [stable-baselines3-contrib](https://github.com/Stable-Baselines-Team/stable-baselines3-contrib) are supported.

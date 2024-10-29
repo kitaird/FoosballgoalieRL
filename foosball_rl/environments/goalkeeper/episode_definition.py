@@ -3,10 +3,10 @@ from typing import Optional
 
 import numpy as np
 
-from foosball_rl.environments.base_episode_definition import EpisodeDefinition
-from foosball_rl.environments.constants import PLAYER_BALL_DISTANCE_INCREMENT, WHITE_STRIKER_X_POSITION, \
+from foosball_rl.environments.common.base_episode_definition import EpisodeDefinition
+from foosball_rl.environments.common.constants import PLAYER_BALL_DISTANCE_INCREMENT, WHITE_STRIKER_X_POSITION, \
     BLACK_GOAL_X_POSITION, FIELD_HEIGHT, ABS_GOAL_Y_SYMMETRIC_BOUND
-from foosball_rl.environments.constraints import ball_outside_table, ball_stopped, \
+from foosball_rl.environments.common.constraints import ball_outside_table, ball_stopped, \
     ball_outside_player_space, ball_in_black_goal_bounds, ball_in_white_goal_bounds
 
 

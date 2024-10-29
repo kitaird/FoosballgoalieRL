@@ -1,0 +1,18 @@
+Callbacks:
+    use_tensorboard_callback: True
+    use_progress_bar_callback: True
+    use_eval_callback: False
+    use_checkpoint_callback: False
+
+EvalCallback:
+    n_eval_envs: 1
+    n_eval_episodes: 25
+    eval_seed: 10
+    eval_freq: !!float 1e5
+    eval_deterministic: True
+
+CheckpointCallback:
+    name_prefix: checkpoint_rl_model
+    save_freq: !!float 5e4
+    save_replay_buffer: True
+    save_vecnormalize: True

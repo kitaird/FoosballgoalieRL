@@ -50,9 +50,9 @@ import gymnasium as gym
 import mujoco
 import numpy as np
 
-from foosball_rl.environments.base_episode_definition import EpisodeDefinition
-from foosball_rl.environments.common.viewer import MujocoViewer
-from foosball_rl.environments.constraints import ball_in_black_goal_bounds, \
+from foosball_rl.environments.common.base_episode_definition import EpisodeDefinition
+from foosball_rl.environments.common.mujoco_viewer import MujocoViewer
+from foosball_rl.environments.common.constraints import ball_in_black_goal_bounds, \
     ball_in_white_goal_bounds
 from foosball_rl.environments.goalkeeper.episode_definition import GoalkeeperEpisodeDefinition
 
