@@ -73,6 +73,9 @@ The project consists of multiple configuration files, namely:
 - `foosball_rl/wrappers/wrapper_config.yml`: The environment wrappers to be used and their configuration. Please refer to
   the [Wrapper README file](https://github.com/kitaird/FoosballRL/blob/develop/foosball_rl/wrappers/README.md).
 
+`<<ExtensionPoint>>`'s mark places where the current implementation can be extended with custom logic, e.g. custom wrappers,
+callbacks, episode definitions or logging.
+
 ## Environments
 
 This project supports two environment configurations: `Goalkeeper-v0` and `Foosball-v0`.
