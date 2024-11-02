@@ -94,5 +94,5 @@ files.
 
 This project is build to work with the algorithms implemented in [stable-baselines3](https://github.com/DLR-RM/stable-baselines3)
 and [stable-baselines3-contrib](https://github.com/Stable-Baselines-Team/stable-baselines3-contrib). Additionally, the 
-mujoco viewer is largely based on the [RL-X](https://github.com/nico-bohlinger/RL-X). Finally, the stl- and obj-files are
-based on
+mujoco viewer is largely based on the [RL-X](https://github.com/nico-bohlinger/RL-X). Finally, the stl-, obj- and xml-model-files will be released
+when licensing is clarified.
