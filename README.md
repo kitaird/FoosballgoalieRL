@@ -1,6 +1,7 @@
 # FoosballRL
 
 #### Train a Foosball-Agent using Deep Reinforcement Learning
+##### Important: Exact obj- and stl-files are not yet released due to licensing questions. The current models are placeholders.
 
 This is an exercise for students to train a goalie in a foosball environment using Python.
 The environment is based on a to-scale mujoco model of a foosball table.
@@ -94,5 +95,5 @@ files.
 
 This project is build to work with the algorithms implemented in [stable-baselines3](https://github.com/DLR-RM/stable-baselines3)
 and [stable-baselines3-contrib](https://github.com/Stable-Baselines-Team/stable-baselines3-contrib). Additionally, the 
-mujoco viewer is largely based on the [RL-X](https://github.com/nico-bohlinger/RL-X). Finally, the stl-, obj- and xml-model-files will be released
-when licensing is clarified.
+mujoco viewer is largely based on the [RL-X](https://github.com/nico-bohlinger/RL-X). Finally, the stl- and obj-files will be released
+when licensing is clarified, including the texture of the field.
