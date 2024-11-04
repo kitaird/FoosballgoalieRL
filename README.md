@@ -97,3 +97,15 @@ This project is build to work with the algorithms implemented in [stable-baselin
 and [stable-baselines3-contrib](https://github.com/Stable-Baselines-Team/stable-baselines3-contrib). Additionally, the 
 mujoco viewer is largely based on the [RL-X](https://github.com/nico-bohlinger/RL-X). Finally, the stl- and obj-files will be released
 when licensing is clarified, including the texture of the field.
+
+## Citation
+If you find this project helpful and use it, please cite it like so:
+```bibtex
+@misc{gashi2024foosballrl,
+      title={FoosballRL: A Foosball simulation for DRL},
+      author={Adriatik Gashi},
+      institution = {Darmstadt University of Applied Sciences},
+      howpublished = {\textsc{url:}~\url{https://github.com/kitaird/FoosballRL}},
+      year={2024}
+}
+```

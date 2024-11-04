@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Gashi"
+  given-names: "Adriatik"
+  orcid: "https://orcid.org/0009-0001-7594-4888"
+title: "FoosballRL: A Foosball simulation for DRL"
+date-released: 2024-11-01
+url: "https://github.com/kitaird/FoosballRL"
+preferred-citation:
+   type: misc
+   authors:
+      - family-names: "Gashi"
+        given-names: "Adriatik"
+        orcid: "https://orcid.org/0009-0001-7594-4888"
+   title: "FoosballRL: A Foosball simulation for DRL"
+   date-released: 2024-11-01
+   institution: "University of Applied Sciences Darmstadt"
+   url: "https://github.com/kitaird/FoosballRL"
+   
