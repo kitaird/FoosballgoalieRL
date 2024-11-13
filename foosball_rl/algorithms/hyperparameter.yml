@@ -17,7 +17,9 @@ dqn:
 ppo:
   policy : MlpPolicy
   verbose: 0
-  gamma: 0.99
+  gamma: 0.999
+  policy_kwargs: dict(net_arch=dict(vf=[1024, 1024, 512], pi=[1024, 1024, 512]))
+  device: mps
 
 sac:
   # MultiInputPolicy when using HER

@@ -46,27 +46,27 @@ def log_training_config(env: GymEnv, seed: int, save_path: Path, hyperparameter:
             f.write(f'{k}: {v}\n')
         f.write('-' * 100 + '\n')
         f.write('Applied wrappers\n')
-        f.write(f'Gym Wrappers: {get_applied_gym_wrappers(env.unwrapped.envs[0])}\n')
+        # f.write(f'Gym Wrappers: {get_applied_gym_wrappers(env.unwrapped.envs[0])}\n')
         f.write(f'VecEnv Wrappers: {get_applied_vecenv_wrappers(env)}\n')
         f.write('-' * 100 + '\n')
         f.write('Environment Arguments\n')
-        env_cfg = env.unwrapped.envs[0].env_config
-        for k, v in env_cfg.items():
-            f.write(f'{k}: {v}\n')
-        f.write('-' * 100 + '\n')
-        f.write('Env Wrappers\n')
-        for k, v in ENV_WRAPPERS.items():
-            f.write(f'{k}: {v}\n')
-        f.write('-' * 100 + '\n')
-        f.write('VecEnv Wrappers\n')
-        for k, v in VEC_ENV_WRAPPERS.items():
-            f.write(f'{k}: {v}\n')
-        f.write('-' * 100 + '\n')
-        f.write('Callbacks\n')
-        for k, v in CALLBACK_CONFIG.items():
-            f.write(f'{k}: {v}\n')
-        f.write('-' * 100 + '\n')
-        f.write('')
+        # env_cfg = env.unwrapped.envs[0].env_config
+        # for k, v in env_cfg.items():
+        #     f.write(f'{k}: {v}\n')
+        # f.write('-' * 100 + '\n')
+        # f.write('Env Wrappers\n')
+        # for k, v in ENV_WRAPPERS.items():
+        #     f.write(f'{k}: {v}\n')
+        # f.write('-' * 100 + '\n')
+        # f.write('VecEnv Wrappers\n')
+        # for k, v in VEC_ENV_WRAPPERS.items():
+        #     f.write(f'{k}: {v}\n')
+        # f.write('-' * 100 + '\n')
+        # f.write('Callbacks\n')
+        # for k, v in CALLBACK_CONFIG.items():
+        #     f.write(f'{k}: {v}\n')
+        # f.write('-' * 100 + '\n')
+        # f.write('')
 
 
 def print_dict(dictionary: Dict[str, Any]) -> None:

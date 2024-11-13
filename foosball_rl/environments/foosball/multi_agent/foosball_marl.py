@@ -1,18 +1,28 @@
 import functools
+from typing import Callable
 
 import gymnasium as gym
 import numpy as np
+from gymnasium.utils import EzPickle
 from pettingzoo import ParallelEnv
 from pettingzoo.utils.env import AgentID, ObsType, ActionType
 
-from foosball_rl.environments.foosball.single_agent.foosball_rl import RawEnv
+from foosball_rl.environments.foosball.single_agent.foosball import RawEnv
 
 
-class FoosballMARL(ParallelEnv):
-    def __init__(self, env: RawEnv,
+class FoosballMARL(ParallelEnv, EzPickle):
+
+    def __init__(self, env_creator: Callable[[],RawEnv],
                  use_team_agents: bool = True):
-        super().__init__()
+        EzPickle.__init__(
+            self,
+            env_creator=env_creator,
+            use_team_agents=use_team_agents
+        )
+        env = env_creator()
         ParallelEnv.metadata = env.metadata
+        self.metadata = env.metadata
+        self.render_mode = env.render_mode
         self.env: RawEnv = env
         if use_team_agents:
             possible_agents = ["black_team", "white_team"]

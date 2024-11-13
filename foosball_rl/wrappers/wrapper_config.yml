@@ -18,5 +18,5 @@ VecEnvWrapper:
     use_video_recording_wrapper: True  # Works only if the environment render_mode == 'rgb_array', doesn't support human rendering and recording
     VecVideoRecorderWrapper:
         video_length: 1000
-        video_interval: !!float 2e5
+        video_interval: !!float 1e5
         video_log_path_suffix: videos

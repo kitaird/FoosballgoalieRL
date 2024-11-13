@@ -15,7 +15,7 @@ foosball_id = 'Foosball-v0'
 
 gym.register(
     id=foosball_id,
-    entry_point='foosball_rl.environments.foosball.single_agent.foosball_rl:RawEnv',
+    entry_point='foosball_rl.environments.foosball.single_agent.foosball:RawEnv',
     max_episode_steps=env_cfg['Environment']['horizon'],
     kwargs={
         'step_frequency': env_cfg['Environment']['step_frequency'],

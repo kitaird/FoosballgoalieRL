@@ -37,8 +37,9 @@ def get_model(algo: str, env, seed: int, experiment_path: Path) -> tuple[BaseAlg
     # Update discount-factor in relevant wrappers
     update_discount_factor(env, float(hyperparameter['gamma']))
 
-    return (ALGOS[algo](env=env, seed=seed, tensorboard_log=(experiment_path / 'tensorboard').__str__(), **hyperparameter),
-            hyperparameter)
+    algo = ALGOS[algo](env=env, tensorboard_log=(experiment_path / 'tensorboard').__str__(), **hyperparameter)
+    algo.action_space.seed(seed=seed)
+    return algo, hyperparameter
 
 
 def get_hyperparameter(algo):

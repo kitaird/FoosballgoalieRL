@@ -1,6 +1,6 @@
 <mujoco model="kicker">
 
-    <option timestep="0.002" integrator="implicitfast"/>
+    <option timestep="0.001" integrator="implicitfast"/>
 
     <default class="main">
         <joint armature="1" damping="1"/>
@@ -14,7 +14,7 @@
                       contype="8" conaffinity="1" quat="1 1 0 0" type="cylinder" size="0.015 0.01" rgba="0 0 1 1"/>
             </default>
             <default class="ball">
-                <geom condim="6" mass="0.021" solimp="0.2 0.3 0.01" solref="-125000 -85" friction="0.1 0.005 0.002"
+                <geom condim="6" mass="0.021" solimp="0.2 0.3 0.01" solref="-125000 -85" friction="0.015 0.005 0.002"
                       contype="1" conaffinity="30" priority="1" type="sphere" size="0.0175" rgba="1 0 0 1"/>
             </default>
             <default class="field">
@@ -38,7 +38,7 @@
             <motor forcelimited="true" forcerange="-26 26" ctrllimited="true" ctrlrange="-1.0 1.0" gear="26"/>
         </default>
         <default class="hinge_motor">
-            <motor forcelimited="true" forcerange="-7.4 7.4" ctrllimited="true" ctrlrange="-1.0 1.0" gear="250"/>
+            <motor forcelimited="true" forcerange="-7.4 7.4" ctrllimited="true" ctrlrange="-1.0 1.0" gear="750"/>
         </default>
     </default>
 

@@ -37,13 +37,13 @@ def apply_env_wrappers(env: gym.Env | gym.Wrapper) -> gym.Env | gym.Wrapper:
 
 
 def apply_vec_env_wrappers(venv: VecEnv, seed: int, vec_normalize_path: str = None, video_logging_path: str = None) -> VecEnv:
+    if VEC_ENV_WRAPPERS['use_video_recording_wrapper']:
+        venv = add_video_recording_wrapper(venv=venv, seed=seed, video_logging_path=video_logging_path)
     if VEC_ENV_WRAPPERS['use_vec_pbrs_wrapper']:
         venv = VecPBRSWrapper(venv)
     if VEC_ENV_WRAPPERS['use_vec_normalize_wrapper']:
         venv = add_vec_normalize_wrapper(venv, vec_normalize_path)
     venv = VecCheckNan(venv, raise_exception=True, warn_once=False)  # Sanity check
-    if VEC_ENV_WRAPPERS['use_video_recording_wrapper']:
-        venv = add_video_recording_wrapper(venv=venv, seed=seed, video_logging_path=video_logging_path)
     ############################################
     # <<ExtensionPoint>>: Add more vec env wrapper here if needed
     ############################################

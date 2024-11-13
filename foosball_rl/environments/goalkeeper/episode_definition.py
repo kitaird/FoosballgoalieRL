@@ -43,7 +43,7 @@ class GoalkeeperEpisodeDefinition(EpisodeDefinition):
                                                                  BLACK_GOAL_X_POSITION,
                                                                  y_target_range=[-ABS_GOAL_Y_SYMMETRIC_BOUND,
                                                                                  ABS_GOAL_Y_SYMMETRIC_BOUND],
-                                                                 velocity=1.2)
+                                                                 velocity=2)
         qpos[0] = ball_x_pos
         qpos[1] = ball_y_pos
         qpos[2] = ball_z_pos
