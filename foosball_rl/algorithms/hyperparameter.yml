@@ -2,7 +2,6 @@ a2c:
   policy: MlpPolicy
   verbose: 0
   gamma: 0.99
-  learning_rate: 7e-4
 
 ddpg:
   policy : MlpPolicy

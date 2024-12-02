@@ -1,18 +1,18 @@
 EnvWrapper:
-    use_add_actions_to_observation_wrapper: True  # If false, the observations won't contain the taken actions
+    use_add_actions_to_observation_wrapper: False  # If false, the observations won't contain the taken actions
     use_goal_env_wrapper : False  # Turn this on if you want to use Hindsight Experience Replay (HerReplayBuffer), you must still specify HER in the algorithm's hyperparameters
     use_action_space_wrapper: False
     ActionSpaceWrapper :
-        action_space : multi_discrete  # Possible values: continuous, discrete, multi_discrete
-        lateral_bins : 5
-        angular_bins : 5
+        action_space : continuous  # Possible values: continuous, discrete, multi_discrete
+        lateral_bins : 0
+        angular_bins : 0
 
 VecEnvWrapper:
     use_vec_pbrs_wrapper: False
-    use_vec_normalize_wrapper: True
+    use_vec_normalize_wrapper: False
     VecNormalizeWrapper:
-        norm_obs: True
-        norm_reward: True
+        norm_obs: False
+        norm_reward: False
         clip_obs: 10
         clip_reward: 10
     use_video_recording_wrapper: True  # Works only if the environment render_mode == 'rgb_array', doesn't support human rendering and recording

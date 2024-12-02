@@ -2,7 +2,7 @@ Callbacks:
     use_tensorboard_callback: True
     use_progress_bar_callback: True
     use_eval_callback: False
-    use_checkpoint_callback: False
+    use_checkpoint_callback: True
 
 EvalCallback:
     n_eval_envs: 1

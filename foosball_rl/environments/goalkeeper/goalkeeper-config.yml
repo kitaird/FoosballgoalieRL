@@ -6,8 +6,8 @@ Environment:
 
 EpisodeDefinition:
     end_episode_on_struck_goal : True
-    end_episode_on_conceded_goal : False
+    end_episode_on_conceded_goal : True
     end_episode_on_ball_stopped : True
     ball_stopped_time_threshold_in_s : 4
-    reset_goalie_position_on_episode_start : False
+    reset_goalie_position_on_episode_start : True
     #<<ExtensionPoint>>: You can add custom parameters here to further customize the episode definition

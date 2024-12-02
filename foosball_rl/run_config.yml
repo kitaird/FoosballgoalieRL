@@ -1,4 +1,4 @@
 Experiment_name : TestRunv2
 Execution_mode : train  # Possible values: train, eval
-Env_id : Goalkeeper-v0  # Possible values: Goalkeeper-v0, Foosball-v0
+Env_id : Goalkeeper-v0  # Possible values: Goalkeeper-v0
 Algorithm : ppo  # Possible values: a2c, ddpg, dqn, ppo, sac, td3, ars, qrdqn, tqc, trpo, ppo_lstm
