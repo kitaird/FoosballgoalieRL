@@ -28,6 +28,7 @@ def create_eval_envs(env_id: str, n_eval_envs: int, seed: int, video_logging_pat
     logging.info("Eval envs: Creating %s %s eval envs with seed %s", n_eval_envs, env_id, seed)
     venv = create_envs(env_id, n_eval_envs, seed, video_logging_path, vec_normalize_path)
     vec_normalize = unwrap_vec_wrapper(venv, VecNormalize)
-    vec_normalize.training = False
-    vec_normalize.norm_reward = False
+    if vec_normalize is not None:
+        vec_normalize.training = False
+        vec_normalize.norm_reward = False
     return venv
