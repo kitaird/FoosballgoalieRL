@@ -23,13 +23,14 @@ def evaluate_model(env_id: str, algo: str, eval_path: Path) -> None:
 
     model_path = eval_config['model_path']
     eval_seed = eval_config['eval_seed']
+    n_eval_envs = eval_config['n_eval_envs']
     n_eval_episodes = eval_config['n_eval_episodes']
 
     logger.info("Evaluating Alg: %s loaded from %s on %s environment", algo, model_path, env_id)
 
     model = ALGOS[algo].load(model_path)
 
-    venv = create_eval_envs(env_id, n_eval_envs=n_eval_episodes, seed=eval_seed, video_logging_path=eval_path,
+    venv = create_eval_envs(env_id, n_eval_envs=n_eval_envs, seed=eval_seed, video_logging_path=eval_path,
                             vec_normalize_path=eval_config['vec_normalize_load_path'])
 
     episode_rewards, episode_lengths = evaluate_policy(model=model, env=venv, n_eval_episodes=n_eval_episodes,
