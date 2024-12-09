@@ -4,6 +4,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Any
 
+import numpy as np
 import yaml
 from stable_baselines3.common.evaluation import evaluate_policy
 
@@ -34,7 +35,7 @@ def evaluate_model(env_id: str, algo: str, eval_path: Path) -> None:
                             vec_normalize_path=eval_config['vec_normalize_load_path'])
 
     episode_rewards, episode_lengths = evaluate_policy(model=model, env=venv, n_eval_episodes=n_eval_episodes,
-                                                       callback=_log_callback)
+                                                       callback=_log_callback, return_episode_rewards=True)
 
     save_results(eval_path=eval_path,
                  eval_seed=eval_seed,
@@ -44,15 +45,15 @@ def evaluate_model(env_id: str, algo: str, eval_path: Path) -> None:
                  episode_lengths=episode_lengths,
                  callback_values=logged_callback_values)
 
-    logger.info("Mean reward: %s, Mean episode length: %s", episode_rewards, episode_lengths)
+    logger.info("Mean reward: %s, Mean episode length: %s", np.mean(episode_rewards), np.mean(episode_lengths))
 
 
 def save_results(eval_path: Path,
                  model_path: str,
                  eval_seed: int,
                  n_eval_episodes: int,
-                 episode_rewards: float,
-                 episode_lengths: float,
+                 episode_rewards: [float],
+                 episode_lengths: [float],
                  callback_values: Dict[str, Any] = None) -> None:
     eval_file_name = f'evaluation_result_{EXPERIMENT_NAME}_{model_path[model_path.rindex("/") + 1:]}_{round(time.time() * 1000)}.txt'
     with open(eval_path / eval_file_name, 'w') as f:
@@ -62,8 +63,10 @@ def save_results(eval_path: Path,
         f.write(f"Model path: {model_path}\n")
         f.write(f"Number of evaluation episodes: {n_eval_episodes}\n")
         f.write("-" * 50 + "\n")
-        f.write(f"Mean reward: {episode_rewards}\n")
-        f.write(f"Mean episode length: {episode_lengths}\n")
+        f.write(f"Mean reward: {np.mean(episode_rewards)}\n")
+        f.write(f"Std reward: {np.std(episode_rewards)}\n")
+        f.write(f"Mean episode length: {np.mean(episode_lengths)}\n")
+        f.write(f"Std episode length: {np.std(episode_lengths)}\n")
         f.write("-" * 50 + "\n")
         f.write("Callback values:\n")
         for k, v in callback_values.items():
