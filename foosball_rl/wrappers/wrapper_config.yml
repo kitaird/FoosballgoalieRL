@@ -3,7 +3,7 @@ EnvWrapper:
     use_goal_env_wrapper : False  # Turn this on if you want to use Hindsight Experience Replay (HerReplayBuffer), you must still specify HER in the algorithm's hyperparameters
     use_action_space_wrapper: False
     ActionSpaceWrapper :
-        action_space : continuous  # Possible values: continuous, discrete, multi_discrete
+        action_space : continuous  # Possible values: continuous, discrete, multi-discrete
         lateral_bins : 0
         angular_bins : 0
 

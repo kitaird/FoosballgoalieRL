@@ -69,8 +69,8 @@ class MultiDiscreteActionWrapper(ActionWrapper):
         self.angular_bins = angular_bins
         self.env_action_space: gym.spaces.Box = env.action_space
         self.env_action_range = np.abs(self.env_action_space.low) + np.abs(self.env_action_space.high)
-        self.lateral_increment = np.sum(self.env_action_range, axis=0) / (lateral_bins - 1)
-        self.angular_increment = np.sum(self.env_action_range, axis=1) / (angular_bins - 1)
+        self.lateral_increment = self.env_action_range[0] / (lateral_bins - 1)
+        self.angular_increment = self.env_action_range[1] / (angular_bins - 1)
         self.action_space = gym.spaces.MultiDiscrete([self.lateral_bins, self.angular_bins], seed=seed)
 
     def action(self, action: WrapperActType) -> ActType:
