@@ -4,7 +4,7 @@ from typing import Dict, Any, Type
 
 import yaml
 from sb3_contrib import ARS, QRDQN, TQC, TRPO, RecurrentPPO
-from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3
+from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3, HerReplayBuffer
 from stable_baselines3.common.base_class import BaseAlgorithm
 from stable_baselines3.common.vec_env import unwrap_vec_wrapper, VecEnv, VecNormalize
 

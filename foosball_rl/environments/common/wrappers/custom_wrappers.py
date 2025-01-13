@@ -10,22 +10,6 @@ from gymnasium.core import WrapperActType, WrapperObsType
 from foosball_rl.environments.common.constants import WHITE_GOAL_X_POSITION
 
 
-def compute_reward(achieved_goal: int | np.ndarray, desired_goal: int | np.ndarray,
-                   _info: Optional[Dict[str, Any]]) -> np.float32:
-    # As we are using a vectorized version, we need to keep track of the `batch_size`
-    if isinstance(achieved_goal, int):
-        batch_size = 1
-    else:
-        batch_size = achieved_goal.shape[0] if len(achieved_goal.shape) > 1 else 1
-
-    reshaped_achieved_goal = np.array(achieved_goal).reshape(batch_size, -1)
-    reshaped_desired_goal = np.array(desired_goal).reshape(batch_size, -1)
-    achieved_ball_pos = reshaped_achieved_goal[:, 0:2]
-    desired_ball_pos = reshaped_desired_goal[:, 0:2]
-
-    return -np.linalg.norm(achieved_ball_pos - desired_ball_pos, axis=-1)
-
-
 class GoalEnvWrapper(gym.Wrapper):
 
     def __init__(self, env: gym.Env):
@@ -61,6 +45,21 @@ class GoalEnvWrapper(gym.Wrapper):
     def step(self, action: WrapperActType):
         obs, reward, terminated, truncated, info = self.env.step(action)
         obs = self._get_obs(obs)
-        reward += float(compute_reward(obs["achieved_goal"], obs["desired_goal"], info).item())
+        reward += float(self.compute_reward(obs["achieved_goal"], obs["desired_goal"], info).item())
         return obs, reward, terminated, truncated, info
 
+    # Necessary here in order to find via get_attr for Wrapper
+    def compute_reward(self, achieved_goal: int | np.ndarray, desired_goal: int | np.ndarray,
+                       _info: Optional[Dict[str, Any]]) -> np.float32:
+        # As we are using a vectorized version, we need to keep track of the `batch_size`
+        if isinstance(achieved_goal, int):
+            batch_size = 1
+        else:
+            batch_size = achieved_goal.shape[0] if len(achieved_goal.shape) > 1 else 1
+
+        reshaped_achieved_goal = np.array(achieved_goal).reshape(batch_size, -1)
+        reshaped_desired_goal = np.array(desired_goal).reshape(batch_size, -1)
+        achieved_ball_pos = reshaped_achieved_goal[:, 0:2]
+        desired_ball_pos = reshaped_desired_goal[:, 0:2]
+
+        return -np.linalg.norm(achieved_ball_pos - desired_ball_pos, axis=-1)
